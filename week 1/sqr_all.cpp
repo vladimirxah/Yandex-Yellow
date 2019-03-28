@@ -56,55 +56,16 @@ void FuncB(T x) { /.../ }
  *
  */
 
-template <typename T> T Sqr(T x);
-template <typename T> vector<T> Sqr(vector<T> x);
+template <typename T> T Sqr(const T& x);
+template <typename T> vector<T> Sqr(const vector<T>& x);
 template <typename Key, typename Val> map<Key, Val> Sqr(const map<Key, Val>& m);
-template <typename First , typename Second > pair <First , Second > Sqr (const pair <First , Second >& p1);
-template <typename T> vector<T> operator* (const vector<T>& v);
-
-// оператор умножения для пары
-template <typename First , typename Second >
-pair <First , Second > operator * (const pair <First , Second >& p1 ,
-const pair <First , Second >& p2) {
-First f = p1.first * p2.first;
-Second s = p1.second * p2.second;
-return {f, s};
-}
-
-// оператор умножения для векторов
-template <typename V>
-std::vector<V> operator* (const std::vector<V>& v) {
-	vector<V> va;
-	for (V& i : v) {
-		va.push_back(i * i);
-	}
-	return va;
-}
-
-// оператор умножения для векторов словарей
-template <typename MK, typename MV>
-std::vector<map<MK, MV>> operator* (const std::vector<map<MK, MV>>& v) {
-	vector<map<MK, MV>> va;
-	for (map<MK, MV>& i : v) {
-		va.push_back(i * i);
-	}
-	return va;
-}
-
-// оператор умножения для словаря
-template <typename Key, typename Val>
-map<Key, Val> operator* (const map<Key, Val>& m1, const map<Key, Val>& m2) {
-	map<Key, Val> ma;
-	for (const pair<Key, Val>& i : m1) {
-		ma[i.first] = m1.at(i.first) * m2.at(i.first);
-	}
-	return ma;
-}
+template <typename First , typename Second > pair <First , Second > Sqr(const pair <First , Second >& p1);
 
 // функция квадрата для чисел
 template <typename T>
 T Sqr(const T& t) {
-	return t * t;
+	T a = t * t;
+	return a;
 }
 
 // функция квадрата для векторов
@@ -112,7 +73,7 @@ template <typename T>
 vector<T> Sqr(const vector<T>& v) {
 	vector<T> va;
 	for (const T& i : v) {
-		va.push_back(i * i);
+		va.push_back(Sqr(i));
 	}
 	return va;
 }
@@ -122,7 +83,7 @@ template <typename Key, typename Val>
 map<Key, Val> Sqr(const map<Key, Val>& m) {
 	map<Key, Val> ma;
 	for (const pair<Key, Val>& i : m) {
-		ma[i.first] = Sqr(i.second);
+		ma.emplace(i.first, Sqr(i.second));
 	}
 	return ma;
 }
@@ -130,11 +91,10 @@ map<Key, Val> Sqr(const map<Key, Val>& m) {
 // функция квадрата для пары
 template <typename First , typename Second >
 pair <First , Second > Sqr (const pair <First , Second >& p1) {
-First f = p1.first * p1.first;
-Second s = p1.second * p1.second;
+First f = Sqr(p1.first);
+Second s = Sqr(p1.second);
 return {f, s};
 }
-
 
 
 
