@@ -1,0 +1,102 @@
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <string>
+
+using namespace std;
+
+/*
+ * Решите задачу «Средняя температура» в других ограничениях на входные данные.
+
+Даны значения температуры, наблюдавшиеся в течение N подряд идущих дней. Найдите номера дней (в нумерации с нуля) со значением температуры выше среднего арифметического за все N дней.
+
+Гарантируется, что среднее арифметическое значений температуры является целым числом.
+
+Формат ввода
+Вводится число N, затем N целых чисел — значения температуры в 0-й, 1-й, ... (N−1)-й день. Гарантируется, что N не превышает миллиона (10^6), а значения температуры, измеряющиеся в миллионных долях градусов по Цельсию, лежат в диапазоне от −10^8 до 10^8. Проверять соблюдение этих ограничений не нужно: вы можете ориентироваться на них при выборе наиболее подходящих типов для переменных.
+
+Формат вывода
+Первое число K — количество дней, значение температуры в которых выше среднего арифметического. Затем K целых чисел — номера этих дней.
+ *
+ * Варианты ввода для отладки
+ *
+ */
+
+int_fast64_t av(const vector<int>& v){
+	int_fast64_t sum = 0;
+	for (auto t : v){
+		sum += t;
+	}
+	return sum / int_fast64_t(v.size());
+}
+
+void print_above_av(const vector<int>& v, int av){
+	vector<int> to_print; int i = 0;
+	for (uint_fast32_t t = 0; t < v.size(); t++){
+		if (v[t] > av) {
+			to_print.push_back(t);
+			i++;
+		}
+	}
+	cout << i << endl;
+	for (auto p : to_print){
+		cout << p << " ";
+	}
+}
+
+int main() {
+	int N;
+	cin >> N;
+	vector<int> temp(N);
+	for (int& enter : temp){
+		cin >> enter;
+	}
+	int average = av(temp);
+	print_above_av(temp, average);
+
+	return 0;
+}
+
+
+
+/*
+ * При решении задачи необходимо было обратить внимание на два момента:
+
+Сумма температур может достигать 10^14, поэтому должна храниться в типе int64_t.
+Сумма температур может быть отрицательной, поэтому не должна делиться на беззнаковое число при вычислении среднего арифметического.
+
+Пример:
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  int n;
+  cin >> n;
+  vector<int> temperatures(n);
+  int64_t sum = 0;
+  for (int& temperature : temperatures) {
+    cin >> temperature;
+    sum += temperature;
+  }
+
+  int average = sum / n;
+
+  vector<int> above_average_indices;
+  for (int i = 0; i < n; ++i) {
+    if (temperatures[i] > average) {
+      above_average_indices.push_back(i);
+    }
+  }
+
+  cout << above_average_indices.size() << endl;
+  for (int i : above_average_indices) {
+    cout << i << " ";
+  }
+  cout << endl;
+
+  return 0;
+}
+
+}*/
