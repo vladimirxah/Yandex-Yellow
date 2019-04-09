@@ -23,35 +23,55 @@ struct Query {
 
 istream& operator >> (istream& is, Query& q) {
   // Реализуйте эту функцию
-	string iquery;
-	is >> iquery;
-	if (iquery.empty()) {
-		return is;
-	}
-	stringstream ss(iquery);
-	string type;
-	string bus, stop;
-	vector<string> stops;
-	ss >> type >> bus >> stop;
-	while ( !(ss.eof()) )
-		{
-		string newstop = "";
-		ss >> newstop;
-		stops.push_back(newstop);
+		string type;
+		is >> type;
+		map< string, QueryType> enumResolver = {{"NEW_BUS", QueryType::NewBus}, {"BUSES_FOR_STOP", QueryType::BusesForStop}, {"STOPS_FOR_BUS", QueryType::StopsForBus}, {"ALL_BUSES", QueryType::AllBuses}};
+		q.type = enumResolver[type];
+		string bus, stop;
+		vector<string> stops;
+		switch (q.type) {
+			case QueryType::NewBus:
+				is >> bus >> stop;
+				for (auto i = 0; i < stoi(stop); ++i)
+				{
+					string newstop = "";
+					is >> newstop;
+					stops.push_back(newstop);
+				}
+				q = {enumResolver[type], bus, stop, stops};
+				break;
+			case QueryType::BusesForStop:
+				{
+					string searchstop;
+					is >> searchstop;
+					q.stop = searchstop;
+				}
+				break;
+			case QueryType::StopsForBus:
+				is >> bus;
+				q.bus = bus;
+				break;
+			case QueryType::AllBuses:
+				break;
 		}
-	map< string, QueryType> enumResolver = {{"NewBus", QueryType::NewBus}, {"BusesForStop", QueryType::BusesForStop}, {"StopsForBus", QueryType::StopsForBus}, {"AllBuses", QueryType::AllBuses}};
-	q = {enumResolver[type], bus, stop, stops};
-	cout << bus << " " << stop << endl;
-  return is;
+	return is;
 }
-//Проверить, павильно ли я написал
 
 struct BusesForStopResponse {
   // Наполните полями эту структуру
+	vector<string> buses;
 };
 
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
   // Реализуйте эту функцию
+	if (r.buses.empty()) {
+		os << "No stop" << endl;
+	} else {
+		for (const string& bus : r.buses) {
+			os << bus << " ";
+		}
+//		os << endl;
+	}
   return os;
 }
 
@@ -66,21 +86,68 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
 
 struct AllBusesResponse {
   // Наполните полями эту структуру
+	vector<string> buses;
 };
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
   // Реализуйте эту функцию
-  return os;
+	if (r.buses.empty()) {
+		os << "No buses" << endl;
+	} else {
+		for (const string& bus_item : r.buses) {
+			os << bus_item;
+		}
+		os << endl;
+	}
+	return os;
 }
 
 class BusManager {
 public:
   void AddBus(const string& bus, const vector<string>& stops) {
     // Реализуйте этот метод
+  	buses_to_stops[bus] = stops;
+		vector<string>& stops2 = buses_to_stops[bus];
+		for (string& stop : stops2) {
+			stops_to_buses[stop].push_back(bus);
+//			контрольный вывод
+/*			cout << "Add " << bus << " for stop " << stop << endl;*/
+		}
+//		контрольный вывод
+/*		cout << "Added buses for stops:" << endl;
+		for (const auto& st : stops_to_buses) {
+			cout << st.first << ": ";
+			for (const auto& bs : st.second) {
+				cout << bs << " ";
+			}
+			cout << "\n";
+		}*/
   }
 
   BusesForStopResponse GetBusesForStop(const string& stop) const {
     // Реализуйте этот метод
+  	BusesForStopResponse stopbuses;
+/*  	for (const auto& item : stops_to_buses) {
+  		cout << item.first << ": ";
+  		for (const auto& bus : item.second) {
+  			cout << bus << " ";
+  		}
+  		cout << endl;
+  	}
+  	cout << "Size of stops_to_buses is " << stops_to_buses.size() << endl;
+  	if (stops_to_buses.count(stop) > 0) {
+  		auto s = stops_to_buses.at(stop).size();
+  		cout << "Size is " << s << endl;
+  	} else {
+  		cout << "Count for " << stop << " is 0." << endl;
+  		return stopbuses;
+  	}*/
+  	const vector<string>& stbuses = stops_to_buses.at(stop);
+//  	cout << stbuses.size() << endl;
+		for (const auto& bus : stbuses) {
+			stopbuses.buses.push_back(bus);
+		}
+		return stopbuses;
   }
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
@@ -89,7 +156,22 @@ public:
 
   AllBusesResponse GetAllBuses() const {
     // Реализуйте этот метод
+  	AllBusesResponse allbuses;
+  	for (const auto& bus_item : buses_to_stops) {
+			string line;
+			line = line + "Bus " + bus_item.first + ": ";
+			for (const string& stop : bus_item.second) {
+//				cout << "next stop is " << stop << " ";
+				line = line + stop + " ";
+			}
+			line.push_back('\n');
+//			cout << line << " new line" << endl;
+			allbuses.buses.push_back(line);
+		}
+  	return allbuses;
   }
+private:
+  map<string, vector<string>> buses_to_stops, stops_to_buses;
 };
 
 // Не меняя тела функции main, реализуйте функции и классы выше
@@ -98,6 +180,7 @@ public:
 BUSES_FOR_STOP stop — вывести названия всех маршрутов автобуса, проходящих через остановку stop.
 STOPS_FOR_BUS bus — вывести названия всех остановок маршрута bus со списком автобусов, на которые можно пересесть на каждой из остановок.
 ALL_BUSES*/
+
 /*ALL_BUSES
 BUSES_FOR_STOP Marushkino
 STOPS_FOR_BUS 32K
@@ -108,7 +191,16 @@ NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
 NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo
 STOPS_FOR_BUS 272*/
 
-void TestInOperator (Query& q) {
+/*
+4
+NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo
+NEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
+BUSES_FOR_STOP Vnukovo
+ALL_BUSES
+*/
+
+void TestInOperator () {
+	Query q;
 	istringstream is1("NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo");
 	is1 >> q;
 	if (q.type == QueryType::NewBus) {
@@ -128,15 +220,37 @@ void TestInOperator (Query& q) {
 	}
 	vector<string> vec = {"Tolstopaltsevo", "Marushkino", "Vnukovo"};
 	if (q.stops == vec) {
-		cout << "Vec stops pass. ";
+		cout << "Vec stops pass. " << endl;
 	} else {
-		cout << "Vec stops fail. ";
+		cout << "Vec stops fail. " << endl;
 	}
 
-	/*istringstream is2("BUSES_FOR_STOP Vnukovo");
-	is2 >> q;
+	Query q2;
+	istringstream is2("BUSES_FOR_STOP Vnukovo");
+	is2 >> q2;
+	if (q2.type == QueryType::BusesForStop) {
+		cout << "Type pass. ";
+	} else {
+		cout << "Type fail. ";
+	}
+	if (q2.bus.empty()) {
+		cout << "Bus pass. ";
+	} else {
+		cout << "Bus fail. ";
+	}
+	if (q2.stop.empty()) {
+		cout << "Num stop pass. ";
+	} else {
+		cout << "Num stop fail. ";
+	}
+	vector<string> vec2 = {"Vnukovo"};
+	if (q2.stops == vec2) {
+		cout << "Vec stops pass. " << endl;
+	} else {
+		cout << "Vec stops fail. " << endl;
+	}
 
-	istringstream is3("STOPS_FOR_BUS 32K");
+/*	istringstream is3("STOPS_FOR_BUS 32K");
 	is3 >> q;
 
 	istringstream is4("ALL_BUSES");
@@ -146,20 +260,18 @@ void TestInOperator (Query& q) {
 
 int main() {
 
-	{
-		Query qq;
-		TestInOperator(qq);
-		return 0;
-	}
 
   int query_count;
   Query q;
 
   cin >> query_count;
 
+//  	query_count = 3;
   BusManager bm;
+//  stringstream stre("NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo/n NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo/n ALL_BUSES");
   for (int i = 0; i < query_count; ++i) {
     cin >> q;
+//  	stre >> q;
     switch (q.type) {
     case QueryType::NewBus:
       bm.AddBus(q.bus, q.stops);
