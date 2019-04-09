@@ -65,7 +65,7 @@ struct BusesForStopResponse {
 ostream& operator << (ostream& os, const BusesForStopResponse& r) {
   // Реализуйте эту функцию
 	if (r.buses.empty()) {
-		os << "No stop" << endl;
+		os << "No stop";
 	} else {
 		for (const string& bus : r.buses) {
 			os << bus << " ";
@@ -77,11 +77,19 @@ ostream& operator << (ostream& os, const BusesForStopResponse& r) {
 
 struct StopsForBusResponse {
   // Наполните полями эту структуру
+	vector<string> vec;
 };
 
 ostream& operator << (ostream& os, const StopsForBusResponse& r) {
   // Реализуйте эту функцию
-  return os;
+	if (r.vec.empty()) {
+		os << "No bus";
+	} else {
+		for (const string& bus_item : r.vec) {
+			os << bus_item << endl;
+		}
+	}
+	return os;
 }
 
 struct AllBusesResponse {
@@ -92,12 +100,11 @@ struct AllBusesResponse {
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
   // Реализуйте эту функцию
 	if (r.buses.empty()) {
-		os << "No buses" << endl;
+		os << "No buses";
 	} else {
 		for (const string& bus_item : r.buses) {
 			os << bus_item;
 		}
-		os << endl;
 	}
 	return os;
 }
@@ -142,6 +149,7 @@ public:
   		cout << "Count for " << stop << " is 0." << endl;
   		return stopbuses;
   	}*/
+  	if (stops_to_buses.count(stop) == 0) return stopbuses;
   	const vector<string>& stbuses = stops_to_buses.at(stop);
 //  	cout << stbuses.size() << endl;
 		for (const auto& bus : stbuses) {
@@ -152,6 +160,23 @@ public:
 
   StopsForBusResponse GetStopsForBus(const string& bus) const {
     // Реализуйте этот метод
+  	StopsForBusResponse r;
+  	if (buses_to_stops.count(bus) == 0) return r;
+		for (const string& stop : buses_to_stops.at(bus)) {
+			string line = "";
+			line = "Stop " + stop + ": ";
+			if (stops_to_buses.at(stop).size() == 1) {
+				line.append("no interchange");
+			} else {
+				for (const string& other_bus : stops_to_buses.at(stop)) {
+					if (bus != other_bus) {
+						line.append(other_bus + " ");
+					}
+				}
+			}
+			r.vec.push_back(line);
+		}
+		return r;
   }
 
   AllBusesResponse GetAllBuses() const {
@@ -181,7 +206,9 @@ BUSES_FOR_STOP stop — вывести названия всех маршрут�
 STOPS_FOR_BUS bus — вывести названия всех остановок маршрута bus со списком автобусов, на которые можно пересесть на каждой из остановок.
 ALL_BUSES*/
 
-/*ALL_BUSES
+/*
+10
+ALL_BUSES
 BUSES_FOR_STOP Marushkino
 STOPS_FOR_BUS 32K
 NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo
@@ -189,7 +216,9 @@ NEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
 BUSES_FOR_STOP Vnukovo
 NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
 NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo
-STOPS_FOR_BUS 272*/
+STOPS_FOR_BUS 272
+ALL_BUSES
+*/
 
 /*
 4
