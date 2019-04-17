@@ -79,7 +79,7 @@ using namespace std;
 template <typename RandomIt>
 void MergeSort(RandomIt range_begin, RandomIt range_end);
 template <typename RandomIt, typename T>
-void Merge(vector<T>& elements, RandomIt middle_left, RandomIt middle_right, RandomIt range_begin, RandomIt range_end, bool first_call);
+void Merge(vector<T>& elements, RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin, RandomIt range_end, bool first_call);
 
 template <typename RandomIt>
 void PrintArray(RandomIt range_begin, RandomIt range_end) {
@@ -105,56 +105,37 @@ void MergeSort(RandomIt range_begin, RandomIt range_end) {
 	MergeSort(begin(elements), middle_left);
 	MergeSort(middle_left, middle_right);
 	MergeSort(middle_right, end(elements));
-			cout << "1/3: ";
+/*			cout << "1/3: ";
 			PrintArray(begin(elements), middle_left);
 			cout << "2/3: ";
 			PrintArray(middle_left, middle_right);
 			cout << "3/3: ";
-			PrintArray(middle_right, end(elements));
+			PrintArray(middle_right, end(elements));*/
 //	Слить первые две трети вектора с помощью алгоритма merge, сохранив результат во временный вектор с помощью back_inserter.
-	Merge(elements, middle_left, middle_right, range_begin, range_end, true);
-			cout << "After merge 1/3 + 2/3:\t";
-			PrintArray(begin(elements), middle_right);
-			cout << "\t\t3/3:\t";
-			PrintArray(middle_right, end(elements));
+			vector<typename RandomIt::value_type> elements_t;
+	Merge(elements_t, elements.begin(), middle_left, middle_right, elements.end(), range_begin, range_end, true);
 //	Слить временный вектор из предыдущего пункта с последней третью вектора из п. 2, записав полученный отсортированный диапазон вместо исходного.
-	Merge(elements, middle_left, middle_right, range_begin, range_end, false);
-			cout << "After merge 1-2/3 + 3/3:\t";
-			PrintArray(range_begin, range_end);
+	Merge(elements_t, elements_t.begin(), elements_t.end(), middle_right, elements.end(), range_begin, range_end, false);
+/*			cout << "After merge 1-2/3 + 3/3:\t";
+			PrintArray(range_begin, range_end);*/
 }
 
 template <typename RandomIt, typename T>
-void Merge(vector<T>& elements, RandomIt middle_left, RandomIt middle_right, RandomIt range_begin, RandomIt range_end, bool first_call) {
+void Merge(vector<T>& elements, RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin, RandomIt range_end, bool first_call) {
 	if (first_call) {
-//		создаем указатели для первых двух третей вектора
-/*		typename vector<T>::iterator lp = elements.begin();
-		typename vector<T>::iterator rp = middle_left;*/
-//		Слить первые две трети вектора с помощью алгоритма merge, сохранив результат во временный вектор с помощью back_inserter.
-				cout << "first look at elements - ";
-				PrintArray(elements.begin(), elements.end());
-//				PrintArray(range_begin, range_end);
-				cout << "lh - ";
-				PrintArray(elements.begin(), middle_left);
-				cout << "rh - ";
-				PrintArray(middle_left, middle_right);
-		merge(elements.begin(), middle_left, middle_left, middle_right, back_inserter(elements));
-				cout << "temp vector must be biger - ";
-				PrintArray(elements.begin(), elements.end());
+		merge(el_begin, middle_left, middle_left, middle_right, back_inserter(elements));
+/*		PrintArray(begin(elements), end(elements));*/
 	} else {
 //		Слить временный вектор из предыдущего пункта с последней третью вектора из п. 2, записав полученный отсортированный диапазон вместо исходного.
 		//	пока не прошли по всему основному вектору (т.е. пока указатель начала не равен указателю конца)
 		while (range_begin != range_end) {
-			typename std::vector<T>::iterator lp = middle_right;
-			int end_of_old_el = (middle_left - elements.begin()) / 2 * 3;
-			typename std::vector<T>::iterator rp = middle_right + end_of_old_el;
-
-			while (lp != (middle_right + end_of_old_el) && rp != elements.end()) {
-				*rp < *lp ? *(range_begin++) = *(rp++) : *(range_begin++) = *(lp++);
+			while (el_begin != middle_left && middle_right != el_end) {
+				*el_begin < *middle_right ? *(range_begin++) = *(el_begin++) : *(range_begin++) = *(middle_right++);
 			}
-			if (lp != middle_left) {
-				*(range_begin++) = *(lp++);
+			if (el_begin != middle_left) {
+				*(range_begin++) = *(el_begin++);
 			} else {
-				*(range_begin++) = *(rp++);
+				*(range_begin++) = *(middle_right++);
 			}
 
 /*		//		пока оба отсортированных временных векторов содержат элементы, сравниваем их и пишем в основной вектор (не забывая перемещать указатели вперед)
