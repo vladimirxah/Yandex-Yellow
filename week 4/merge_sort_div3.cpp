@@ -78,8 +78,8 @@ using namespace std;
 //объявление шаблонов
 template <typename RandomIt>
 void MergeSort(RandomIt range_begin, RandomIt range_end);
-template <typename RandomIt, typename T>
-void Merge(vector<T>& elements, RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin, RandomIt range_end, bool first_call);
+template <typename RandomIt>
+void Merge_div3(RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin);
 
 template <typename RandomIt>
 void PrintArray(RandomIt range_begin, RandomIt range_end) {
@@ -93,7 +93,7 @@ void PrintArray(RandomIt range_begin, RandomIt range_end) {
 template <typename RandomIt>
 void MergeSort(RandomIt range_begin, RandomIt range_end) {
 //	выходим из функции, если 0 или 1 элемент
-	if ((range_end - range_begin) < 2) {
+	if ((range_end - range_begin) < 3) {
 		return;
 	}
 //	создаем временный вектор с копией элементов
@@ -105,53 +105,20 @@ void MergeSort(RandomIt range_begin, RandomIt range_end) {
 	MergeSort(begin(elements), middle_left);
 	MergeSort(middle_left, middle_right);
 	MergeSort(middle_right, end(elements));
-/*			cout << "1/3: ";
-			PrintArray(begin(elements), middle_left);
-			cout << "2/3: ";
-			PrintArray(middle_left, middle_right);
-			cout << "3/3: ";
-			PrintArray(middle_right, end(elements));*/
 //	Слить первые две трети вектора с помощью алгоритма merge, сохранив результат во временный вектор с помощью back_inserter.
-			vector<typename RandomIt::value_type> elements_t;
-	Merge(elements_t, elements.begin(), middle_left, middle_right, elements.end(), range_begin, range_end, true);
 //	Слить временный вектор из предыдущего пункта с последней третью вектора из п. 2, записав полученный отсортированный диапазон вместо исходного.
-	Merge(elements_t, elements_t.begin(), elements_t.end(), middle_right, elements.end(), range_begin, range_end, false);
-/*			cout << "After merge 1-2/3 + 3/3:\t";
-			PrintArray(range_begin, range_end);*/
+	Merge_div3(begin(elements), middle_left, middle_right, end(elements), range_begin);
 }
 
-template <typename RandomIt, typename T>
-void Merge(vector<T>& elements, RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin, RandomIt range_end, bool first_call) {
-	if (first_call) {
-		merge(el_begin, middle_left, middle_left, middle_right, back_inserter(elements));
-/*		PrintArray(begin(elements), end(elements));*/
-	} else {
+
+template <typename RandomIt>
+void Merge_div3(RandomIt el_begin, RandomIt middle_left, RandomIt middle_right, RandomIt el_end, RandomIt range_begin) {
+//	создаем временный вектор для merge
+	vector<typename RandomIt::value_type> merge_result;
+//	Слить первые две трети вектора с помощью алгоритма merge, сохранив результат во временный вектор с помощью back_inserter.
+	merge(el_begin, middle_left, middle_left, middle_right, back_inserter(merge_result));
 //		Слить временный вектор из предыдущего пункта с последней третью вектора из п. 2, записав полученный отсортированный диапазон вместо исходного.
-		//	пока не прошли по всему основному вектору (т.е. пока указатель начала не равен указателю конца)
-		while (range_begin != range_end) {
-			while (el_begin != middle_left && middle_right != el_end) {
-				*el_begin < *middle_right ? *(range_begin++) = *(el_begin++) : *(range_begin++) = *(middle_right++);
-			}
-			if (el_begin != middle_left) {
-				*(range_begin++) = *(el_begin++);
-			} else {
-				*(range_begin++) = *(middle_right++);
-			}
-
-/*		//		пока оба отсортированных временных векторов содержат элементы, сравниваем их и пишем в основной вектор (не забывая перемещать указатели вперед)
-			if (lh_begin != lh_end && rh_begin != rh_end) {
-				*rh_begin < *lh_begin ? *(range_begin++) = *(rh_begin++) : *(range_begin++) = *(lh_begin++);
-		//		берем только из левого вектора, если правый пуст
-			} else if (lh_begin != lh_end) {
-					*(range_begin++) = *(lh_begin++);
-		//		берем только из правого вектора, если левый пуст
-			} else {
-				*(range_begin++) = *(rh_begin++);
-			}*/
-		}
-	}
-
-
+	merge(merge_result.begin(), merge_result.end(), middle_right, el_end, range_begin);
 }
 
 
@@ -177,6 +144,63 @@ return 0;
 
 //example
 /*
-Внимание! Ниже опубликовано решение необязательной задачи «Демографические показатели». Настоятельно рекомендуем попытаться её решить перед тем, как читать решение.
+В этой задаче достаточно аккуратно реализовать предложенный алгоритм, не ошибившись при использовании итераторов.
 */
+/*Часть 1. Разбиение на 2 части
+template <typename RandomIt>
+void MergeSort(RandomIt range_begin, RandomIt range_end) {
+  // 1. Если диапазон содержит меньше 2 элементов, выходим из функции
+  int range_length = range_end - range_begin;
+  if (range_length < 2) {
+    return;
+  }
 
+  // 2. Создаем вектор, содержащий все элементы текущего диапазона
+  vector<typename RandomIt::value_type> elements(range_begin, range_end);
+
+  // 3. Разбиваем вектор на две равные части
+  auto mid = elements.begin() + range_length / 2;
+
+  // 4. Вызываем функцию MergeSort от каждой половины вектора
+  MergeSort(elements.begin(), mid);
+  MergeSort(mid, elements.end());
+
+  // 5. С помощью алгоритма merge сливаем отсортированные половины
+  // в исходный диапазон
+  // merge -> http://ru.cppreference.com/w/cpp/algorithm/merge
+  merge(elements.begin(), mid, mid, elements.end(), range_begin);
+}
+
+Часть 2. Разбиение на 3 части
+template <typename RandomIt>
+void MergeSort(RandomIt range_begin, RandomIt range_end) {
+  // 1. Если диапазон содержит меньше 2 элементов, выходим из функции
+  int range_length = range_end - range_begin;
+  if (range_length < 2) {
+    return;
+  }
+
+  // 2. Создаем вектор, содержащий все элементы текущего диапазона
+  vector<typename RandomIt::value_type> elements(range_begin, range_end);
+
+  // 3. Разбиваем вектор на три равные части
+  auto one_third = elements.begin() + range_length / 3;
+  auto two_third = elements.begin() + range_length * 2 / 3;
+
+  // 4. Вызываем функцию MergeSort от каждой трети вектора
+  MergeSort(elements.begin(), one_third);
+  MergeSort(one_third, two_third);
+  MergeSort(two_third, elements.end());
+
+  // 5. С помощью алгоритма merge cливаем первые две трети во временный вектор
+  // back_inserter -> http://ru.cppreference.com/w/cpp/iterator/back_inserter
+  vector<typename RandomIt::value_type> interim_result;
+  merge(elements.begin(), one_third, one_third, two_third,
+        back_inserter(interim_result));
+
+  // 6. С помощью алгоритма merge сливаем отсортированные части
+  // в исходный диапазон
+  // merge -> http://ru.cppreference.com/w/cpp/algorithm/merge
+  merge(interim_result.begin(), interim_result.end(), two_third, elements.end(),
+        range_begin);
+}*/
