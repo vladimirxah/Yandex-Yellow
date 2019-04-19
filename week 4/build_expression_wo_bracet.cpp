@@ -43,10 +43,13 @@
 
 8
 2
-/5
++5
 *2
 
-
+-8
+2
+/5
+*2
 
 
 
@@ -166,28 +169,17 @@ bool operator > (const next_member& lhs, const next_member& rhs) {
 }
 
 string Print_Exp (string& sfm, const int& fm, const vector<next_member> nm) {
+//	fm >= 0 ? sfm.append(to_string(fm)) : sfm.append("(" + to_string(fm) + ")");
 	sfm.append(to_string(fm));
-	for (auto it = nm.begin(); it != nm.end(); ++it) {
-		if (it > (it - 1)) {
-			switch ((it == nm.begin() || it == prev(nm.end()))) {
-			case 0:
-				sfm = "(" + sfm;
-				sfm.append((*it).Make_String() + ")");
-				break;
-			case 1:
-				sfm.append((*it).Make_String());
-				break;
-			}
-
-
-/*			sfm = "(" + sfm;
-//			sfm.append((*it).Make_String() + ")");
-			(it != prev(nm.end()) || it != nm.begin()) ? sfm.append((*it).Make_String() + ")") : sfm.append((*it).Make_String());*/
-		} else {
+	for (auto it = begin(nm); it < end(nm); ++it) {
+		if (it == begin(nm)) sfm.append((*it).Make_String());
+		if (*it > *(it - 1) && it != begin(nm)) {
+			sfm = "(" + sfm + ")";
+			sfm.append((*it).Make_String());
+		} else if (it != begin(nm)) {
 			sfm.append((*it).Make_String());
 		}
-//		(it != prev(nm.end())) ? sfm.append((*it).Make_String() + ")") : sfm.append((*it).Make_String());
-//		sfm.append((*it).Make_String() + ")");
+
 	}
 	return sfm;
 }
