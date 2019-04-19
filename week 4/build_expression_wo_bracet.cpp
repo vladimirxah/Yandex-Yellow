@@ -40,26 +40,14 @@
 / 1
 + 5
 * -2
-
-8
-2
-+5
-*2
-
--8
-2
-/5
-*2
-
-
-
  */
 
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <set>
-#include <map>
+//#include <set>
+//#include <map>
+#include <deque>
 //#include <algorithm>
 //#include <iterator>
 //#include <string>
@@ -117,7 +105,7 @@ struct next_member {
 	int member;
 };
 
-ostream& operator << (ostream& os, const next_member& nm) {
+/*ostream& operator << (ostream& os, const next_member& nm) {
 	switch (nm.operat) {
 	case Operation::sum:
 		os << " + " << to_string(nm.member);
@@ -133,7 +121,7 @@ ostream& operator << (ostream& os, const next_member& nm) {
 		break;
 	}
 	return os;
-}
+}*/
 
 bool operator > (const next_member& lhs, const next_member& rhs) {
 	int lhsi, rhsi;
@@ -170,17 +158,27 @@ bool operator > (const next_member& lhs, const next_member& rhs) {
 
 string Print_Exp (string& sfm, const int& fm, const vector<next_member> nm) {
 //	fm >= 0 ? sfm.append(to_string(fm)) : sfm.append("(" + to_string(fm) + ")");
-	sfm.append(to_string(fm));
+	deque<string> sdeq;
+	sdeq.push_back(to_string(fm));
+//	sfm.append(to_string(fm));
 	for (auto it = begin(nm); it < end(nm); ++it) {
-		if (it == begin(nm)) sfm.append((*it).Make_String());
+		if (it == begin(nm)) sdeq.push_back((*it).Make_String())/*sfm.append((*it).Make_String())*/;
 		if (*it > *(it - 1) && it != begin(nm)) {
-			sfm = "(" + sfm + ")";
-			sfm.append((*it).Make_String());
+			sdeq.push_front("(");
+			sdeq.push_back(")");
+			sdeq.push_back((*it).Make_String());
+//			sfm = "(" + sfm + ")";
+//			sfm.append((*it).Make_String());
 		} else if (it != begin(nm)) {
-			sfm.append((*it).Make_String());
+			sdeq.push_back((*it).Make_String());
+//			sfm.append((*it).Make_String());
 		}
-
 	}
+	stringstream ss;
+	for (auto i : sdeq) {
+		ss << i;
+	}
+	sfm = ss.str();
 	return sfm;
 }
 
@@ -213,28 +211,68 @@ return 0;
 
 //example
 /*
+ * Часть 2. Без лишних скобок
+ *
 */
+//#include <iostream>
+//#include <iterator>
+//#include <vector>
 //#include <algorithm>
-//#include <utility>
-//#include <string>
+//#include <numeric>
+//#include <deque>
+//
+//using namespace std;
 //
 //
-//template <typename RandomIt>
-//pair<RandomIt, RandomIt> FindStartsWith(
-//    RandomIt range_begin, RandomIt range_end, char prefix) {
+//// Определим структуру для удобной организации данных
+//struct Operation {
+//  // Параметры по умолчанию нужны для конструирования вектора
+//  // ненулевого размера, см. (*)
+//  char type = 0;
+//  int number = 0;
+//};
 //
-//  // Все строки, начинающиеся с '<prefix>', больше или равны строке "<prefix>"
-//  auto left = lower_bound(range_begin, range_end, string(1, prefix));
 //
-//  // Составим следующий в алфавите символ.
-//  // Не страшно, если prefix = 'z':
-//  // в этом случае мы получим следующий за 'z' символ в таблице символов
-//  char next_prefix = static_cast<char>(prefix + 1);
-//
-//  // Строка "<next_prefix>" в рамках буквенных строк
-//  // является точной верхней гранью
-//  // множества строк, начнающихся с '<prefix>'
-//  auto right = lower_bound(range_begin, range_end, string(1, next_prefix));
-//
-//  return {left, right};
+//// Функция для проверки выполнения требований постановки скобок
+//bool NeedBrackets(char last, char current) {
+//  return (last == '+' || last == '-') && (current == '*' || current == '/');
 //}
+//
+//
+//int main() {
+//  int initial_number;
+//  cin >> initial_number;
+//
+//  int number_of_operations;
+//  cin >> number_of_operations;
+//  vector<Operation> operations(number_of_operations);  // (*)
+//  for (int i = 0; i < number_of_operations; ++i) {
+//    cin >> operations[i].type;
+//    cin >> operations[i].number;
+//  }
+//
+//  deque<string> expression;
+//  expression.push_back(to_string(initial_number));
+//  // первое число никогда не обрамляется скобками
+//  char last_type = '*';
+//  for (const auto& operation : operations) {
+//    // Если условия удовлетворены, обрамляем последовательность скобками
+//    if (NeedBrackets(last_type, operation.type)) {
+//      expression.push_front("(");
+//      expression.push_back(")");
+//    }
+//    expression.push_back(" ");
+//    expression.push_back(string(1, operation.type));
+//    expression.push_back(" ");
+//    expression.push_back(to_string(operation.number));
+//
+//    last_type = operation.type;
+//  }
+//
+//  for (const string& s : expression) {
+//    cout << s;
+//  }
+//
+//  return 0;
+//}
+
