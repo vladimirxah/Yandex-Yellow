@@ -74,3 +74,20 @@ public:
 private:
   int fail_count = 0;
 };
+
+/*
+Add functions
+void TestSomething () {
+	AssertEqual(... , ...)
+}
+
+void TestAll () {
+  TestRunner tr;
+  tr.RunTest(TestSomething, "TestSomething");
+}
+
+int main() {
+	TestAll();
+	...
+}
+*/
