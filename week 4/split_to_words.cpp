@@ -26,7 +26,7 @@
 #include <set>
 #include <algorithm>
 
-#include "test_runner.h"
+#include "..\src\test_runner.h"
 
 using namespace std;
 

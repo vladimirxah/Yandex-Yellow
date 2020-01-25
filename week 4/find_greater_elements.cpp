@@ -10,7 +10,7 @@
 #include <vector>
 #include <set>
 
-#include "test_runner.h"
+#include "..\src\test_runner.h"
 
 using namespace std;
 

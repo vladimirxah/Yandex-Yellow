@@ -98,7 +98,7 @@ return {f, s};
 
 
 
-int main() {
+int main_sqr_all() {
 	// Квадрат векотра
 	vector<int> v = {1, 2, 3};
 	cout << "vector:";

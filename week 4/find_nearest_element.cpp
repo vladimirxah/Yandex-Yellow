@@ -20,7 +20,7 @@ set<int>::const_iterator FindNearestElement(
 //#include <iterator>
 //#include <string>
 
-#include "test_runner.h"
+#include "..\src\test_runner.h"
 
 using namespace std;
 
