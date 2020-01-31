@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
@@ -40,11 +41,13 @@ private:
   int day;
 };
 
+
 // определить сравнение для дат необходимо для использования их в качестве ключей словаря
 bool operator<(const Date& lhs, const Date& rhs) {
   // воспользуемся тем фактом, что векторы уже можно сравнивать на <:
   // создадим вектор из года, месяца и дня для каждой даты и сравним их
-  return vector<int>{lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()} < vector<int>{rhs.GetYear(), rhs.GetMonth(), rhs.GetDay()}; // @suppress("Symbol is not resolved")
+	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) <
+				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
 }
 
 // даты будут по умолчанию выводиться в нужном формате
