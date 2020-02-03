@@ -126,7 +126,7 @@ Date ParseDate(const string& date) {
   return Date(year, month, day);
 }
 
-int main() {
+int main_white() {
   try {
     Database db;
 
