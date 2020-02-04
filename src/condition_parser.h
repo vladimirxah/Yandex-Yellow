@@ -19,3 +19,8 @@ enum class Comparison {
 	Equal,
 	NotEqual
 };
+
+enum class LogicalOperation {
+	Or,
+	And
+};

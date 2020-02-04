@@ -5,6 +5,7 @@
 #include "test_runner.h"
 
 #include <iostream>
+#include <vector>
 //#include <stdexcept>
 
 using namespace std;
@@ -35,9 +36,9 @@ Date ParseDate(istream& is) {
 string ParseEvent(istream& is) {
   // Реализуйте эту функцию
 	// !!! Черновая реализация
-	string event;
+/*	string event;
 	is >> event;
-	return event;
+	return event;*/
 }
 
 void TestAll();
