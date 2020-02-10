@@ -12,4 +12,4 @@ shared_ptr<Node> ParseCondition(istream& is);
 
 void TestParseCondition();
 
-Date ParseDate(istream& is) {};
+Date ParseDate(istream& is);
