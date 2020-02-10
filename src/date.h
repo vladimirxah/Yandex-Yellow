@@ -30,6 +30,12 @@ bool operator<(const Date& lhs, const Date& rhs) {
 				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
 }
 
+// непонятно, нужен ли этот оператор
+bool operator==(const Date& lhs, const Date& rhs) {
+	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) ==
+				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+}
+
 // даты будут по умолчанию выводиться в нужном формате
 ostream& operator<<(ostream& stream, const Date& date) {
   stream << setw(4) << setfill('0') << date.GetYear() <<
