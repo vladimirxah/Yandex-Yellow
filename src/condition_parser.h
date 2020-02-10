@@ -3,6 +3,7 @@
 #include "node.h"
 
 #include <memory>
+#include <map>
 #include <iostream>
 
 using namespace std;
