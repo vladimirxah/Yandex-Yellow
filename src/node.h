@@ -33,3 +33,10 @@ private:
 	Date date_;
 };
 
+class EventComparisonNode : public Node {
+public:
+	EventComparisonNode (const Comparison& cmp, const string& value) : Node(), cmp_(cmp), value_(value) {};
+private:
+	Comparison cmp_;
+	string value_;
+};
