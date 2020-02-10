@@ -53,3 +53,8 @@ private:
 	shared_ptr<Node> left_;
 	shared_ptr<Node> expression_to_parse_;
 };
+
+class EmptyNode : public Node {
+public:
+	EmptyNode () : Node() {};
+};
