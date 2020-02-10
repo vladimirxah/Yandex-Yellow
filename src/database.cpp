@@ -37,7 +37,7 @@ set<string> Database::Find(const Date& date) const {
 	}
 }
 
-ostream Database::Print(ostream& ostr) {
+ostream& Database::Print(ostream& ostr) {
 	for (const auto& item : storage) {
 		for (const string& event : item.second) {
 			ostr << item.first << " " << event << endl;

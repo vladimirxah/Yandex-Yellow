@@ -24,15 +24,15 @@ public:
 
   int DeleteDate(const Date& date);
 
-  int RemoveIf (const ?);
+  int RemoveIf (const int eval);
 
-  void FindIf (const ?);
+  void FindIf (const int eval);
 
-  void Last (const ?);
+  void Last (const Date& date);
 
-  set<string> Find(const Date& date);
+  set<string> Find(const Date& date) const;
 
-  ostream Print(ostream& ostr);
+  ostream& Print(ostream& ostr);
 
 private:
   map<Date, set<string>> storage;
