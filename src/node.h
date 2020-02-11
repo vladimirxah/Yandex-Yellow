@@ -8,6 +8,6 @@
 class Node {
 public:
 	virtual ~Node ();
-  virtual int Evaluate(const Date& date, const string& string)/* const = 0*/;
-
+  virtual bool Evaluate(const Date& date, const string& string)/* const = 0*/;
+//  здесь может быть bool (если смотреть на сигнатуру Assert в файлах с тестами. Но может быть и int.
 };
