@@ -4,6 +4,15 @@
 #include <map>
 using namespace std;
 
+enum class Comparison {
+	Less,
+	LessOrEqual,
+	Greater,
+	GreaterOrEqual,
+	Equal,
+	NotEqual
+};
+
 template <class It> shared_ptr<Node> ParseComparison(It& current, It end) {
   if (current == end) {
     throw logic_error("Expected column name: date or event");
