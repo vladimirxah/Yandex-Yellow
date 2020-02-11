@@ -21,7 +21,8 @@ public:
 	int RemoveIf (/*понять, что идет на выходе методов Evaluate для класса Node*/);
 	// на вход принимается [ParseCondition(is)](const Date& date, const string& event) {  return condition->Evaluate(date, event); }
 
-
+	vector<pair<Date, string>> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/);
+//	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
 
 private:
