@@ -3,3 +3,11 @@
 
 #pragma once
 
+#include "date.h"
+
+class Node {
+public:
+	virtual ~Node ();
+  virtual int Evaluate(const Date& date, const string& string)/* const = 0*/;
+
+};
