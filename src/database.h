@@ -15,6 +15,8 @@
 
 using namespace std;
 
+typedef pair<Date, string> record;
+
 class Database {
 public:
 	void Add (const Date& date, const string& event);
@@ -25,9 +27,16 @@ public:
 	vector<pair<Date, string>> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/) const;
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
+	record Last (const Date& date) const;
 
 private:
 	map<Date, set<string>> db_set_;
 	map<Date, vector<string>> db_vec_;
 
 };
+
+// даты будут по умолчанию выводиться в нужном формате
+ostream& operator<<(ostream& stream, const record& rec) {
+	stream << rec.first << ' ' << rec.second;
+  return stream;
+}
