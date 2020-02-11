@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <sstream>
 #include <iomanip>
+#include <tuple>
+
+using namespace std;
 
 class Date {
 public:
@@ -25,6 +28,8 @@ private:
 bool operator<(const Date& lhs, const Date& rhs) {
   // воспользуемся тем фактом, что векторы уже можно сравнивать на <:
   // создадим вектор из года, месяца и дня для каждой даты и сравним их
+//	auto tlhs = make_tuple (lhs.GetYear(), lhs.GetMonth(), lhs.GetDay());
+
 	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) <
 				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
 }
