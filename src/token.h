@@ -1,3 +1,5 @@
+/*token.h/cpp — содержат готовый токенизатор, который используется в функции ParseCondition;*/
+
 #pragma once
 
 #include <sstream>
