@@ -35,7 +35,7 @@ private:
 
 };
 
-// даты будут по умолчанию выводиться в нужном формате
+// записи (дата и событие) будут по умолчанию выводиться в нужном формате
 ostream& operator<<(ostream& stream, const record& rec) {
 	stream << rec.first << ' ' << rec.second;
   return stream;
