@@ -15,7 +15,7 @@ void Database::Add (const Date& date, const string& event) {
 	auto counter = db_set_.count(date);
 	if (counter == 0u) {
 		db_set_[date].insert(event);
-		db_vec_[date].pushback(event);
+		db_vec_[date].push_back(event);
 	}/* else {
 
 	}*/
