@@ -20,6 +20,14 @@ void Database::Add (const Date& date, const string& event) {
 	}
 }
 
-ostream Database::Print (ostream& ) const {
-
+ostream& Database::Print (ostream& os) const {
+	for (auto it = db_vec_.begin(); it != db_vec_.end(); ++it) {
+//		os << it->first << " ";
+		auto &val_vector = it->second;
+		for (auto it_v = val_vector.begin(); it_v != val_vector.end(); ++it_v) {
+			os << it->first << " ";
+			os << *it_v << endl;
+		}
+	}
+	return os;
 }
