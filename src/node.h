@@ -26,8 +26,11 @@ public:
 	virtual ~Node ();
   virtual bool Evaluate(const Date& date, const string& string)/* const = 0*/;
 //  здесь может быть bool (если смотреть на сигнатуру Assert в файлах с тестами. Но может быть и int.
+//  пока не понятно как надо реализовывать этот метод
 };
 
+
+//все дочерние классы декларированы по сигнатурам в condition_parser.cpp но как их реализовывать пока не понятно!
 class EmptyNode : public Node {};
 
 class DateComparisonNode : public Node {
