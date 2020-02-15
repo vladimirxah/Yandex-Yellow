@@ -27,7 +27,6 @@ Find date >= 2017-01-01 AND date < 2017-07-01 AND event == "sport event" — н�
 using namespace std;
 
 string ParseEvent(istream& is) {
-  // Реализуйте эту функцию
 	while (is.peek() == ' ') { // skip spaces
 		is.get();
 	}
