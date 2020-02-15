@@ -1,8 +1,9 @@
+#include <sstream>
+#include <memory>
+
 #include "condition_parser.h"
 #include "test_runner.h"
 
-#include <sstream>
-#include <memory>
 using namespace std;
 
 void TestParseCondition() {
