@@ -80,13 +80,17 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& str) {
 }
 
 bool LogicalOperationNode::Evaluate(const Date& date, const string& str) {
+	bool ev = false;
 	switch (logical_operation_)
 	{
 	case LogicalOperation::Or:
-		return left_->Evaluate(date, str) || right_->Evaluate(date, str);
+		ev = left_->Evaluate(date, str) || right_->Evaluate(date, str);
+		break;
 	case LogicalOperation::And:
-		return left_->Evaluate(date, str) && right_->Evaluate(date, str);
+		ev = left_->Evaluate(date, str) && right_->Evaluate(date, str);
+		break;
 	}
+	return ev;
 }
 /*
 private:
