@@ -33,3 +33,13 @@ ostream& Database::Print (ostream& os) const {
 	}
 	return os;
 }
+
+record Database::Last(const Date& date) const {	// не уверен в этой реализации
+	try {
+		const vector<string> &vec = db_vec_.at(date);
+//		const string event = vec.back();
+		return make_pair(date,vec.back());
+	}	catch (const exception& e) {
+    cout << e.what() << endl;
+  }
+}
