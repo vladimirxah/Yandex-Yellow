@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include "date.h"
-
 #include <string>
 #include <map>
 #include <set>
 #include <vector>
 #include <tuple>
 #include <iostream>
+
+#include "date.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ public:
 	int RemoveIf (/*понять, что идет на выходе методов Evaluate для класса Node*/);
 	// на вход принимается [ParseCondition(is)](const Date& date, const string& event) {  return condition->Evaluate(date, event); }
 
-	vector<pair<Date, string>> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/) const;
+	vector<record> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/) const;
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
 	record Last (const Date& date) const;
