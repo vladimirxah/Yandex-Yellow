@@ -29,31 +29,27 @@ using namespace std;
 Date ParseDate(istringstream& is); // Этой строки нет в "примере", добавлял я. Возможно надо реализовать в date.h
 // функция должна выбрасывать invalid_argument& если формат даты неверный
 Date ParseDate(istringstream& is) {
-	string str;
-	getline (is,str);
-	for (const auto& i : str) {		// !!! Try to impliment this better way. Get string from istream to add it to error 																message
-		is.unget();
-	}
+	string istr;
+	is >> istr;
+	istringstream date_stream(istr);
   bool ok = true;
 
   int year;
-  ok = ok && (is >> year);
-  ok = ok && (is.peek() == '-') && year >= 0;
-  is.ignore(1);
+  ok = ok && (date_stream >> year);
+  ok = ok && (date_stream.peek() == '-') && year >= 0;
+  date_stream.ignore(1);
 
   int month;
-  ok = ok && (is >> month);
-  ok = ok && (is.peek() == '-') && month > 0;
-  is.ignore(1);
+  ok = ok && (date_stream >> month);
+  ok = ok && (date_stream.peek() == '-') && month > 0;
+  date_stream.ignore(1);
 
   int day;
-  ok = ok && (is >> day);
-  ok = ok && is.eof() && day > 0;
+  ok = ok && (date_stream >> day);
+  ok = ok && date_stream.eof() && day > 0;
 
   if (!ok) {
-//  	string err_message = "Wrong date format: ";
-//  	is >> err_message;
-    throw logic_error("Wrong date format: " + str);
+    throw logic_error("Wrong date format: " + istr);
   }
   return Date(year, month, day);
 }
