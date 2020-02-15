@@ -7,6 +7,10 @@
 
 #include "node.h"
 
+bool EmptyNode::Evaluate(const Date& date, const string& str) {	//не уверен в этой реализации. По идее если условие пустое, то удалять/находить надо все записи
+	return true;
+}
+
 bool DateComparisonNode::Evaluate(const Date& date, const string& str) {
 //	надо переписать через оператор switch, для enums он легко пишется
 	bool ev = false;

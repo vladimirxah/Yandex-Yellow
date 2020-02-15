@@ -31,7 +31,9 @@ public:
 
 
 //все дочерние классы декларированы по сигнатурам в condition_parser.cpp но как их реализовывать пока не понятно!
-class EmptyNode : public Node {};
+class EmptyNode : public Node {
+	bool Evaluate(const Date& date, const string& str) override;
+};
 
 class DateComparisonNode : public Node {
 public:
