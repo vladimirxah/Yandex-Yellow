@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "date.h"
+#include "node.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ class Database {
 public:
 	void Add (const Date& date, const string& event);
 	ostream& Print (ostream& os) const;
-	int RemoveIf (/*понять, что идет на выходе методов Evaluate для класса Node*/);
+	int RemoveIf (shared_ptr<Node> condition);
 	// на вход принимается [ParseCondition(is)](const Date& date, const string& event) {  return condition->Evaluate(date, event); }
 
 	vector<record> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/) const;
