@@ -29,3 +29,29 @@ int Date::GetMonth() const {
 int Date::GetDay() const {
 	return day;
 }
+
+Date ParseDate(istringstream& is) {
+	string istr;
+	is >> istr;
+	istringstream date_stream(istr);
+  bool ok = true;
+
+  int year;
+  ok = ok && (date_stream >> year);
+  ok = ok && (date_stream.peek() == '-') && year >= 0;
+  date_stream.ignore(1);
+
+  int month;
+  ok = ok && (date_stream >> month);
+  ok = ok && (date_stream.peek() == '-') && month > 0;
+  date_stream.ignore(1);
+
+  int day;
+  ok = ok && (date_stream >> day);
+  ok = ok && date_stream.eof() && day > 0;
+
+  if (!ok) {
+    throw logic_error("Wrong date format: " + istr);
+  }
+  return Date(year, month, day);
+}
