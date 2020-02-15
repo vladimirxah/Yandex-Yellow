@@ -26,7 +26,7 @@ Find date >= 2017-01-01 AND date < 2017-07-01 AND event == "sport event" — н�
 
 using namespace std;
 
-Date ParseDate(istringstream& is); // Этой строки нет в "примере", добавлял я. Возможно адо реализовать в date.h
+Date ParseDate(istringstream& is); // Этой строки нет в "примере", добавлял я. Возможно надо реализовать в date.h
 // функция должна выбрасывать invalid_argument& если формат даты неверный
 Date ParseDate(istringstream& is) {
 	string str;
@@ -60,6 +60,12 @@ Date ParseDate(istringstream& is) {
 
 string ParseEvent(istream& is) {
   // Реализуйте эту функцию
+	while (is.peek() == ' ') { // skip spaces
+		is.get();
+	}
+	string str;
+	getline(is, str);
+	return str;
 }
 
 void TestAll();
