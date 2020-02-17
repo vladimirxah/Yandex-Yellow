@@ -58,7 +58,6 @@ int main() {
       auto predicate = [condition](const Date& date, const string& event) {
         return condition->Evaluate(date, event);
       };
-//      predicate == 3u;
       int count = db.RemoveIf(predicate);
       cout << "Removed " << count << " entries" << endl;
     } else if (command == "Find") {
