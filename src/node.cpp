@@ -7,11 +7,11 @@
 
 #include "node.h"
 
-bool EmptyNode::Evaluate(const Date& date, const string& str) {	//не уверен в этой реализации. По идее если условие пустое, то удалять/находить надо все записи
+bool EmptyNode::Evaluate(const Date& date, const string& str) const {	//не уверен в этой реализации. По идее если условие пустое, то удалять/находить надо все записи
 	return true;
 }
 
-bool DateComparisonNode::Evaluate(const Date& date, const string& str) {
+bool DateComparisonNode::Evaluate(const Date& date, const string& str) const {
 //	надо переписать через оператор switch, для enums он легко пишется
 	bool ev = false;
 /*	if (cmp_ == Comparison::Less) {
@@ -53,7 +53,7 @@ bool DateComparisonNode::Evaluate(const Date& date, const string& str) {
 	return ev;
 }
 
-bool EventComparisonNode::Evaluate(const Date& date, const string& str) {
+bool EventComparisonNode::Evaluate(const Date& date, const string& str) const {
 	bool ev = false;
 	switch (cmp_)
 	{
@@ -79,7 +79,7 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& str) {
 	return ev;
 }
 
-bool LogicalOperationNode::Evaluate(const Date& date, const string& str) {
+bool LogicalOperationNode::Evaluate(const Date& date, const string& str) const {
 	bool ev = false;
 	switch (logical_operation_)
 	{
