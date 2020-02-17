@@ -37,24 +37,57 @@ ostream& Database::Print (ostream& os) const {
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
 	map<Date, set<string>> temp_set;
 	map<Date, vector<string>> temp_vec;
+	int count_del = 0;
+	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
+	//под заданное условие - добавляю их во временную БД, чтобы их потом можно было вычесть
 	for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
 		auto &val_set = it_m->second;
 		for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
 			auto &date = it_m->first;
-			auto &event = *it_s;
-			if (predicate(date, event)) {
-
+			auto& event = it_s;
+			if (predicate(date, *event)) {
+				++count_del;
+				temp_set[date].insert(*event);
+//				temp_vec[date].push_back(*event);
 			}
 		}
 	}
-	return 5;
+	//если были удаления из базы, надо пройтись по базе и удалить ненужные события
+	if (count_del > 0) {
+		for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
+			auto &date = it_m->first;
+			if (temp_set.find(date) != temp_set.end()) {
+				set<string> set_dif;
+				auto &val_set = it_m->second;
+				set_difference(val_set.begin(), val_set.end(), temp_set[date].begin(), temp_set[date].end(),
+						std::inserter(set_dif, set_dif.end()));
+				db_set_[date] = set_dif;
+			}
+
+		}
+		set<string> set_dif;
+
+	}
+	return count_del;
 //	condition->Evaluate()
+}
+
+vector<record> Database::FindIf (function<bool(const Date& date, const string& event)> predicate) const {
+	vector<record> founded_events;
+	for (auto it_m = db_vec_.begin(); it_m != db_vec_.end(); ++it_m) {
+		auto &val_vec = it_m->second;
+		for (auto it_v = val_vec.begin(); it_v != val_vec.end(); ++it_v) {
+			if (predicate(it_m->first, *it_v)) {
+				founded_events.push_back(make_pair(it_m->first, *it_v));
+			}
+		}
+	}
+	return founded_events;
 }
 
 record Database::Last(const Date& date) const {	// не уверен в этой реализации
 	try {
 		const vector<string> &vec = db_vec_.at(date);
-//		const string event = vec.back();
 		return make_pair(date,vec.back());
 	}	catch (const exception& e) {
     cout << e.what() << endl;

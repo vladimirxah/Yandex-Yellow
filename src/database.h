@@ -11,6 +11,8 @@
 #include <tuple>
 #include <iostream>
 #include <functional>
+#include <algorithm>
+#include <iterator>
 
 #include "date.h"
 #include "node.h"
