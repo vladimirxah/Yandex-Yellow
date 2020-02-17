@@ -2,7 +2,6 @@
 /*database.h/cpp — эти файлы должны содержать объявление и определение класса Database;*/
 
 
-
 #pragma once
 
 #include <string>
@@ -11,6 +10,7 @@
 #include <vector>
 #include <tuple>
 #include <iostream>
+#include <functional>
 
 #include "date.h"
 #include "node.h"
@@ -23,10 +23,10 @@ class Database {
 public:
 	void Add (const Date& date, const string& event);
 	ostream& Print (ostream& os) const;
-	int RemoveIf (shared_ptr<Node> condition);
+	int RemoveIf (function<bool(const Date& date, const string& event)> predicate); //std::function<int(int)> x
 	// на вход принимается [ParseCondition(is)](const Date& date, const string& event) {  return condition->Evaluate(date, event); }
 
-	vector<record> FindIf (/*понять, что идет на выходе методов Evaluate для класса Node*/) const;
+	vector<record> FindIf (function<bool(const Date& date, const string& event)> predicate) const;
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
 	record Last (const Date& date) const;
@@ -38,7 +38,4 @@ private:
 };
 
 // записи (дата и событие) будут по умолчанию выводиться в нужном формате
-ostream& operator<<(ostream& stream, const record& rec) {
-	stream << rec.first << ' ' << rec.second;
-  return stream;
-}
+ostream& operator<<(ostream& stream, const record& rec);

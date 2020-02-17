@@ -34,6 +34,23 @@ ostream& Database::Print (ostream& os) const {
 	return os;
 }
 
+int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
+	map<Date, set<string>> temp_set;
+	map<Date, vector<string>> temp_vec;
+	for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
+		auto &val_set = it_m->second;
+		for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
+			auto &date = it_m->first;
+			auto &event = *it_s;
+			if (predicate(date, event)) {
+
+			}
+		}
+	}
+	return 5;
+//	condition->Evaluate()
+}
+
 record Database::Last(const Date& date) const {	// не уверен в этой реализации
 	try {
 		const vector<string> &vec = db_vec_.at(date);
@@ -42,4 +59,10 @@ record Database::Last(const Date& date) const {	// не уверен в этой
 	}	catch (const exception& e) {
     cout << e.what() << endl;
   }
+	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
+}
+
+ostream& operator<<(ostream& stream, const record& rec) {
+	stream << rec.first << ' ' << rec.second;
+  return stream;
 }
