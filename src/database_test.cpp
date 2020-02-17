@@ -3,6 +3,7 @@
 #include "condition_parser.h"
 
 void TestDatabase() {
+//int main() {
   istringstream empty_is("");
   auto empty_condition = ParseCondition(empty_is);
   auto empty_predicate = [empty_condition](const Date& date, const string& event) {
@@ -10,6 +11,7 @@ void TestDatabase() {
   };
 
   // Add 2 - Del 1 - Add deleted again
+//  cout << "Add 2 - Del 1 - Add deleted again" << endl;
   {
     Database db;
     Date d(2019, 1, 1);
@@ -22,7 +24,7 @@ void TestDatabase() {
     };
     AssertEqual(db.RemoveIf(predicate), 1, "Db Add2-Del-Add 1");
     db.Add(d, "e1");
-    AssertEqual(db.FindIf(empty_predicate).size(), 2, "Db Add2-Del-Add 2");
+    AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
   }
 
   // Add
@@ -36,7 +38,7 @@ void TestDatabase() {
     auto predicate = [condition](const Date& date, const string& event) {
       return condition->Evaluate(date, event);
     };    
-    AssertEqual(db.FindIf(predicate).size(), 1, "Db Add Duplicates 1");
+    AssertEqual(db.FindIf(predicate).size(), 1u, "Db Add Duplicates 1");
   }
 
   // Last
@@ -47,17 +49,19 @@ void TestDatabase() {
     Date d2(2018, 12, 22);
     db.Add(d1, "e1");
     db.Add(d2, "e2");
-    AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 1");
+//    AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 1");
+    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,22}, "e2"), "Db Last 1");
     Date d3(2018, 12, 24);
     db.Add(d3, "e3");
-    AssertEqual(db.Last(d), "2018-12-24 e3", "Db Last 2");
+//    AssertEqual(db.Last(d), "2018-12-24 e3", "Db Last 2");
+    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,24}, "e3"), "Db Last 2");
 
     // Get last event for date before first event 
     try {
       Date d4(2017, 2, 2);
       db.Last(d4);
       Assert(false, "Db Last 3");
-    } catch (invalid_argument e) {
+    } catch (invalid_argument &e) {
       // Pass
     }
 
@@ -68,11 +72,14 @@ void TestDatabase() {
       return condition->Evaluate(date, event);
     };    
     db.RemoveIf(predicate);
-    AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 4");
+//    AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 4");
+    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,22}, "e2"), "Db Last 4");
 
-    AssertEqual(db.Last(d1), "2019-01-02 e1", "Db Last 5");
+//    AssertEqual(db.Last(d1), "2019-01-02 e1", "Db Last 5");
+    AssertEqual(db.Last(d1), make_pair<Date,string>({2019,01,02}, "e1"), "Db Last 5");
     db.Add(d2, "e4");
-    AssertEqual(db.Last(d2), "2018-12-22 e4", "Db Last 6");
+//    AssertEqual(db.Last(d2), "2018-12-22 e4", "Db Last 6");
+    AssertEqual(db.Last(d2), make_pair<Date,string>({2018,12,22}, "e4"), "Db Last 6");
   }
 
   // Del
@@ -150,7 +157,7 @@ void TestDatabase() {
     auto predicate = [condition](const Date& date, const string& event) {
       return condition->Evaluate(date, event);
     };    
-    AssertEqual(db.FindIf(predicate).size(), 2, "Db Find 1");
+    AssertEqual(db.FindIf(predicate).size(), 2u, "Db Find 1");
   }
   {
     Database db;
@@ -163,7 +170,7 @@ void TestDatabase() {
     auto predicate = [condition](const Date& date, const string& event) {
       return condition->Evaluate(date, event);
     };    
-    AssertEqual(db.FindIf(predicate).size(), 4, "Db Find 2");
+    AssertEqual(db.FindIf(predicate).size(), 4u, "Db Find 2");
   }
   {
     Database db;
@@ -171,7 +178,7 @@ void TestDatabase() {
     db.Add({2019, 1, 1}, "e2");
     db.Add({2018, 1, 7}, "e3");
     db.Add({2018, 1, 7}, "e4");
-    AssertEqual(db.FindIf(empty_predicate).size(), 4, "Db Find 3");
+    AssertEqual(db.FindIf(empty_predicate).size(), 4u, "Db Find 3");
   }
   {
     Database db;
@@ -184,7 +191,7 @@ void TestDatabase() {
     auto predicate = [condition](const Date& date, const string& event) {
       return condition->Evaluate(date, event);
     };    
-    AssertEqual(db.FindIf(predicate).size(), 1, "Db Find 4");
+    AssertEqual(db.FindIf(predicate).size(), 1u, "Db Find 4");
   }
 
   {
@@ -198,7 +205,7 @@ void TestDatabase() {
     auto predicate = [condition](const Date& date, const string& event) {
       return condition->Evaluate(date, event);
     };    
-    AssertEqual(db.FindIf(predicate).size(), 2, "Db Find 5");
+    AssertEqual(db.FindIf(predicate).size(), 2u, "Db Find 5");
   }
 
   // Add - Del - Add - Del
@@ -212,4 +219,5 @@ void TestDatabase() {
     db.Add({2019, 1, 1}, "e2");
     AssertEqual(db.RemoveIf(empty_predicate), 2, "Db Add-Del-Add-Del 1");
   }
+//  return 0;
 }
