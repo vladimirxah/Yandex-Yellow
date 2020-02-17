@@ -24,7 +24,7 @@ private:
   int day;
 };
 
-Date ParseDate(istringstream& is); // Этой строки нет в "примере", добавлял я. Возможно надо реализовать в date.h
+Date ParseDate(istream& is); // Этой строки нет в "примере", добавлял я. Возможно надо реализовать в date.h
 // функция должна выбрасывать invalid_argument& если формат даты неверный
 
 bool operator<(const Date& lhs, const Date& rhs);

@@ -30,7 +30,7 @@ int Date::GetDay() const {
 	return day;
 }
 
-Date ParseDate(istringstream& is) {
+Date ParseDate(istream& is) {
 	string istr;
 	is >> istr;
 	istringstream date_stream(istr);
