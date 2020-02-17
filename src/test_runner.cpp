@@ -11,9 +11,9 @@
 
 vector<int> h;
 
-inline void Assert(bool b, const string& hint) {
+/*inline void Assert(bool b, const string& hint) {
   AssertEqual(b, true, hint);
-}
+}*/
 
 template <class TestFunc>
 void TestRunner::RunTest(TestFunc func, const string& test_name) {
