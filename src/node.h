@@ -23,6 +23,7 @@ enum class LogicalOperation {
 
 class Node {
 public:
+//	Node();
 	virtual ~Node ();
   virtual bool Evaluate(const Date& date, const string& str)/* const = 0*/;
 //  здесь может быть bool (если смотреть на сигнатуру Assert в файлах с тестами. Но может быть и int.
@@ -40,8 +41,8 @@ public:
 	DateComparisonNode (const Comparison& cmp, const Date& date) : Node(), cmp_(cmp), date_(date) {};
 	bool Evaluate(const Date& date, const string& str) override; //метод должен делать сравнение сохранненой даты и подаваемой даты
 private:
-	Comparison cmp_;
-	Date date_;
+	const Comparison cmp_;
+	const Date date_;
 };
 
 class EventComparisonNode : public Node {
@@ -55,12 +56,12 @@ private:
 
 class LogicalOperationNode : public Node {
 public:
-	LogicalOperationNode (const LogicalOperation& logical_operation, shared_ptr<Node> left,
-											shared_ptr<Node>& right) : Node(), logical_operation_(logical_operation), left_(left),
+	LogicalOperationNode (const LogicalOperation& logical_operation, shared_ptr<Node>& left,
+											shared_ptr<Node> right) : Node(), logical_operation_(logical_operation), left_(left),
 											right_(right) {};
 	bool Evaluate(const Date& date, const string& str) override;
 private:
 	const LogicalOperation logical_operation_;
 	shared_ptr<Node>& left_;
-	shared_ptr<Node>& right_;
+	shared_ptr<Node> right_;
 };

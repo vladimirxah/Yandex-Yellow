@@ -44,7 +44,7 @@ bool DateComparisonNode::Evaluate(const Date& date, const string& str) {
 		ev = date >= date_;
 		break;
 	case Comparison::Equal:
-		ev = date = date_;
+		ev = date == date_;
 		break;
 	case Comparison::NotEqual:
 		ev = date != date_;
@@ -70,7 +70,7 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& str) {
 		ev = str >= str_;
 		break;
 	case Comparison::Equal:
-		ev = str = str_;
+		ev = str == str_;
 		break;
 	case Comparison::NotEqual:
 		ev = str != str_;
