@@ -1,6 +1,4 @@
-#include "database.h"
-#include "test_runner.h"
-#include "condition_parser.h"
+#include "database_test.h"
 
 void TestDatabase() {
 //int main() {
@@ -12,7 +10,27 @@ void TestDatabase() {
 
   // Add 2 - Del 1 - Add deleted again
 //  cout << "Add 2 - Del 1 - Add deleted again" << endl;
-  {
+
+  try {
+		Database db;
+		Date d(2019, 1, 1);
+		db.Add(d, "e1");
+		db.Add(d, "e2");
+		istringstream is(R"(event == "e1")");
+		auto condition = ParseCondition(is);
+		auto predicate = [condition](const Date& date, const string& event) {
+			return condition->Evaluate(date, event);
+		};
+		AssertEqual(db.RemoveIf(predicate), 1, "Db Add2-Del-Add 1");
+		AssertEqual(db.Size(), 1u, "Size of Db must be 1 after 1e deleted from it");
+		db.Add(d, "e1");
+		AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
+		cerr << "Add 2 - Del 1 - Add deleted again" << " OK" << endl;
+	} catch (runtime_error& e) {
+		cerr << "Add 2 - Del 1 - Add deleted again" << " fail: " << e.what() << endl;
+	}
+
+  /*{
     Database db;
     Date d(2019, 1, 1);
     db.Add(d, "e1");
@@ -23,9 +41,10 @@ void TestDatabase() {
       return condition->Evaluate(date, event);
     };
     AssertEqual(db.RemoveIf(predicate), 1, "Db Add2-Del-Add 1");
+    AssertEqual(db.Size(), 1u, "Size of Db must be 1 after 1e deleted from it");
     db.Add(d, "e1");
     AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
-  }
+  }*/
 
   // Add
   {
