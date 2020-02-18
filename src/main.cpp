@@ -39,6 +39,8 @@ string ParseEvent(istream& is) {
 void TestAll();
 
 int main() {
+//	map<Date, vector<string>> m = {{{1, 2, 10}, {"one", "three"}}, {{39, 4, 31}, {"two", "four"}}};
+//	cout << m << endl;
   TestAll();
 
   Database db;
