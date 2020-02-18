@@ -31,7 +31,7 @@ public:
 	vector<record> FindIf (function<bool(const Date& date, const string& event)> predicate) const;
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
-	record Last (const Date& date) const;
+	string Last (const Date& date) const;
 	unsigned int Size() const;
 
 private:
@@ -42,3 +42,5 @@ private:
 
 // записи (дата и событие) будут по умолчанию выводиться в нужном формате
 ostream& operator<<(ostream& stream, const record& rec);
+
+bool operator<(const Date& lhs, const pair<Date, vector<string>>& rhs);

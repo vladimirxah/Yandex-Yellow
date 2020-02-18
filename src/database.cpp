@@ -85,13 +85,26 @@ vector<record> Database::FindIf (function<bool(const Date& date, const string& e
 	return founded_events;
 }
 
-record Database::Last(const Date& date) const {	// не уверен в этой реализации
-	try {
+string Database::Last(const Date& date) const {
+/*	По команде Last date нужно вывести последнее из событий, случившихся к дате date. Более формально:
+	среди всех имеющихся дат событий нужно найти наибольшую, не превосходящую date;
+	из всех событий с такой датой нужно выбрать последнее добавленное и вывести в формате, аналогичном формату команды Print;
+	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
+	const auto it_founded = upper_bound(begin(db_vec_), end(db_vec_), date);
+//	const auto it_founded = db_vec_.lower_bound(date);
+	if (it_founded == db_vec_.end()) {
+		return "No entries";
+	} else {
+		stringstream ss;
+		ss << it_founded->first << " " << it_founded->second.back();
+		return ss.str();
+	}
+	/*try {
 		const vector<string> &vec = db_vec_.at(date);
 		return make_pair(date,vec.back());
 	}	catch (const exception& e) {
     cout << e.what() << endl;
-  }
+  }*/
 //	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
 }
 
@@ -102,4 +115,9 @@ unsigned int Database::Size() const {
 ostream& operator<<(ostream& stream, const record& rec) {
 	stream << rec.first << ' ' << rec.second;
   return stream;
+}
+
+//i cant use
+bool operator<(const Date& lhs, const pair<Date, vector<string>>& rhs) {
+	return lhs < rhs.first;
 }
