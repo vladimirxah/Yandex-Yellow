@@ -67,13 +67,11 @@ bool operator>(const Date& lhs, const Date& rhs) {
 }
 
 bool operator<=(const Date& lhs, const Date& rhs) {
-	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) <=
-				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+	return lhs < rhs || lhs == rhs;
 }
 
 bool operator>=(const Date& lhs, const Date& rhs) {
-	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) >=
-				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+	return lhs > rhs || lhs == rhs;
 }
 
 bool operator==(const Date& lhs, const Date& rhs) {
@@ -82,8 +80,7 @@ bool operator==(const Date& lhs, const Date& rhs) {
 }
 
 bool operator!=(const Date& lhs, const Date& rhs) {
-	return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) !=
-				 make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+	return !(lhs == rhs);
 }
 
 // даты будут по умолчанию выводиться в нужном формате
