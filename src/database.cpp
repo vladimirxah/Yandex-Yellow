@@ -95,6 +95,10 @@ record Database::Last(const Date& date) const {	// не уверен в этой
 	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
 }
 
+unsigned int Database::Size() const {
+	return db_vec_.size();
+}
+
 ostream& operator<<(ostream& stream, const record& rec) {
 	stream << rec.first << ' ' << rec.second;
   return stream;

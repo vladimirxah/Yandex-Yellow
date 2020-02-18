@@ -32,6 +32,7 @@ public:
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
 	record Last (const Date& date) const;
+	unsigned int Size() const;
 
 private:
 	map<Date, set<string>> db_set_;
