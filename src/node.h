@@ -24,7 +24,7 @@ enum class LogicalOperation {
 class Node {
 public:
 //	Node();
-//	virtual ~Node ();
+	virtual ~Node() {};
   virtual bool Evaluate(const Date& date, const string& str) const = 0;
 //  здесь может быть bool (если смотреть на сигнатуру Assert в файлах с тестами. Но может быть и int.
 //  пока не понятно как надо реализовывать этот метод
@@ -34,7 +34,7 @@ public:
 //все дочерние классы декларированы по сигнатурам в condition_parser.cpp но как их реализовывать пока не понятно!
 class EmptyNode : public Node {
 public:
-	bool Evaluate(const Date& date, const string& str) const override;
+	bool Evaluate(const Date& date, const string& str) const;
 };
 
 class DateComparisonNode : public Node {
@@ -52,17 +52,16 @@ public:
 	bool Evaluate(const Date& date, const string& str) const override;
 private:
 	const Comparison cmp_;
-	const string& str_;
+	const string str_;
 };
 
 class LogicalOperationNode : public Node {
 public:
-	LogicalOperationNode (const LogicalOperation& logical_operation, shared_ptr<Node>& left,
+	LogicalOperationNode (const LogicalOperation& logical_operation, shared_ptr<Node> left,
 											shared_ptr<Node> right) : logical_operation_(logical_operation), left_(left),
 											right_(right) {};
 	bool Evaluate(const Date& date, const string& str) const override;
 private:
 	const LogicalOperation logical_operation_;
-	shared_ptr<Node>& left_;
-	shared_ptr<Node> right_;
+	shared_ptr<Node> left_, right_;
 };
