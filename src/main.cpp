@@ -20,6 +20,7 @@ Find date >= 2017-01-01 AND date < 2017-07-01 AND event == "sport event" — н�
 #include "condition_parser.h"
 #include "node.h"
 #include "test_runner.h"
+#include "database_test.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -107,6 +108,7 @@ void TestParseEvent() {
 
 void TestAll() {
   TestRunner tr;
-//  tr.RunTest(TestParseEvent, "TestParseEvent");
-//  tr.RunTest(TestParseCondition, "TestParseCondition");
+  tr.RunTest(TestParseEvent, "TestParseEvent");
+  tr.RunTest(TestParseCondition, "TestParseCondition");
+  tr.RunTest(TestDatabase, "Full test db");
 }
