@@ -12,3 +12,5 @@
 #include "condition_parser.h"
 
 void TestDatabase();
+
+void TestCommandLast();
