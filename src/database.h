@@ -42,5 +42,3 @@ private:
 
 // записи (дата и событие) будут по умолчанию выводиться в нужном формате
 ostream& operator<<(ostream& stream, const record& rec);
-
-bool operator<(const Date& lhs, const pair<Date, vector<string>>& rhs);

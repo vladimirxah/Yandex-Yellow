@@ -36,7 +36,6 @@ ostream& Database::Print (ostream& os) const {
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
 	map<Date, set<string>> temp_set;
-	map<Date, vector<string>> temp_vec;
 	int count_del = 0;
 	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
 	//под заданное условие - добавляю их во временную БД, чтобы их потом можно было вычесть
@@ -54,9 +53,11 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 	}
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события
 	if (count_del > 0) {
-		for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
-			auto &date = it_m->first;
-			if (temp_set.find(date) != temp_set.end()) {
+		map<Date, vector<string>> temp_vec(db_vec_);
+		for (auto it_m = temp_vec.begin(); it_m != temp_vec.end(); ++it_m) {
+			auto date = it_m->first;
+			auto search = temp_set.find(date);
+			if (search != temp_set.end()) {
 				set<string> set_dif;
 				auto &val_set = it_m->second;
 				set_difference(val_set.begin(), val_set.end(), temp_set[date].begin(), temp_set[date].end(),
@@ -90,14 +91,12 @@ string Database::Last(const Date& date) const {
 	среди всех имеющихся дат событий нужно найти наибольшую, не превосходящую date;
 	из всех событий с такой датой нужно выбрать последнее добавленное и вывести в формате, аналогичном формату команды Print;
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
-	const auto it_founded = upper_bound(begin(db_vec_), end(db_vec_), date);
+	const auto it_founded = db_vec_.upper_bound(date);
 //	const auto it_founded = db_vec_.lower_bound(date);
 	if (it_founded == db_vec_.end()) {
 		return "No entries";
 	} else {
-		stringstream ss;
-		ss << it_founded->first << " " << it_founded->second.back();
-		return ss.str();
+		return it_founded->second.back();
 	}
 	/*try {
 		const vector<string> &vec = db_vec_.at(date);
@@ -109,15 +108,16 @@ string Database::Last(const Date& date) const {
 }
 
 unsigned int Database::Size() const {
-	return db_vec_.size();
+	auto vec_size = db_vec_.size();
+	auto set_size = db_set_.size();
+	if ( vec_size == set_size ) {
+		return vec_size;
+	} else {
+		throw runtime_error("Size of DB is not consistent");
+	}
 }
 
 ostream& operator<<(ostream& stream, const record& rec) {
 	stream << rec.first << ' ' << rec.second;
   return stream;
-}
-
-//i cant use
-bool operator<(const Date& lhs, const pair<Date, vector<string>>& rhs) {
-	return lhs < rhs.first;
 }
