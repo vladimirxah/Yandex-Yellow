@@ -92,7 +92,7 @@ record Database::Last(const Date& date) const {	// не уверен в этой
 	}	catch (const exception& e) {
     cout << e.what() << endl;
   }
-	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
+//	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
 }
 
 unsigned int Database::Size() const {
