@@ -35,32 +35,33 @@ ostream& Database::Print (ostream& os) const {
 }
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
-	map<Date, set<string>> temp_set;
+	vector<Date> dates_found;
+	map<Date, set<string>> del_map_set;
 	int count_del = 0;
 	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
-	//под заданное условие - добавляю их во временную БД, чтобы их потом можно было вычесть
+	//под заданное условие - добавляю их во временную БД c множеством, чтобы их потом можно было вычесть
 	for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
 		auto &val_set = it_m->second;
 		for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
-			auto &date = it_m->first;
-			auto& event = it_s;
-			if (predicate(date, *event)) {
+			auto date = it_m->first;
+			if (predicate(date, *it_s)) {
 				++count_del;
-				temp_set[date].insert(*event);
-//				temp_vec[date].push_back(*event);
+				dates_found.push_back(date);
+				del_map_set[date].insert(*it_s);
 			}
 		}
 	}
-	//если были удаления из базы, надо пройтись по базе и удалить ненужные события
+	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
 	if (count_del > 0) {
+		unique(dates_found.begin(),dates_found.end());
 		map<Date, vector<string>> temp_vec(db_vec_);
 		for (auto it_m = temp_vec.begin(); it_m != temp_vec.end(); ++it_m) {
 			auto date = it_m->first;
-			auto search = temp_set.find(date);
-			if (search != temp_set.end()) {
+			std::map<Date, std::set<string> >::iterator search = del_map_set.find(date);
+			if (search != del_map_set.end()) {
 				set<string> set_dif;
 				auto &val_set = it_m->second;
-				set_difference(val_set.begin(), val_set.end(), temp_set[date].begin(), temp_set[date].end(),
+				set_difference(val_set.begin(), val_set.end(), del_map_set[date].begin(), del_map_set[date].end(),
 						std::inserter(set_dif, set_dif.end()));
 				db_set_[date] = set_dif;
 			}
