@@ -68,11 +68,9 @@ void TestDatabase() {
     db.Add(d1, "e1");
     db.Add(d2, "e2");
     AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 1");
-//    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,22}, "e2"), "Db Last 1");
     Date d3(2018, 12, 24);
     db.Add(d3, "e3");
     AssertEqual(db.Last(d), "2018-12-24 e3", "Db Last 2");
-//    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,24}, "e3"), "Db Last 2");
 
     // Get last event for date before first event 
     try {
