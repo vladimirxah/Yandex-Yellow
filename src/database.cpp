@@ -109,12 +109,13 @@ string Database::Last(const Date& date) const {
 	среди всех имеющихся дат событий нужно найти наибольшую, не превосходящую date;
 	из всех событий с такой датой нужно выбрать последнее добавленное и вывести в формате, аналогичном формату команды Print;
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
-	auto it_founded = db_vec_.upper_bound(date);
+//	auto it_founded = db_vec_.upper_bound(date);
+	auto it_founded = upper_bound(db_vec_.rbegin(), db_vec_.rend(), date,
+																[](const Date& date, const pair<Date,vector<string>>& lhs) -> bool { return lhs.first < date; });
 //	const auto it_founded = db_vec_.lower_bound(date);
-	if (it_founded == db_vec_.end()) {
-		return "No entries";
+	if (it_founded == db_vec_.rend()) {
+		throw invalid_argument("No entries");
 	} else {
-		it_founded--;
 		stringstream ss;
 		ss << it_founded->first << " " << it_founded->second.back();
 //		string last(ss);
