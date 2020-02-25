@@ -35,8 +35,8 @@ ostream& Database::Print (ostream& os) const {
 }
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
-	vector<Date> dates_found;
-	map<Date, set<string>> del_map_set;
+//	vector<Date> dates_found;
+	map<Date, set<string>> del_map_set;		//Словарь дат в множество событий. Заношу сюда удаленные события.
 	int count_del = 0;
 	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
 	//под заданное условие - добавляю их во временную БД c множеством, чтобы их потом можно было вычесть
@@ -46,15 +46,15 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 			auto date = it_m->first;
 			if (predicate(date, *it_s)) {
 				++count_del;
-				dates_found.push_back(date);
+//				dates_found.push_back(date);
 				del_map_set[date].insert(*it_s);
 			}
 		}
 	}
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
 	if (count_del > 0) {
-		unique(dates_found.begin(),dates_found.end());
-		map<Date, vector<string>> temp_vec(db_vec_);
+//		unique(dates_found.begin(),dates_found.end());
+/*		map<Date, vector<string>> temp_vec(db_vec_);		//копия словаря дат в вектор событий. для итерации по нему
 		for (auto it_m = temp_vec.begin(); it_m != temp_vec.end(); ++it_m) {
 			auto date = it_m->first;
 			std::map<Date, std::set<string> >::iterator search = del_map_set.find(date);
@@ -66,8 +66,25 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 				db_set_[date] = set_dif;
 			}
 
+		}*/
+		if (del_map_set == db_set_) {
+			db_set_.clear();
+			db_vec_.clear();
+			return count_del;
+		} else {
+			for (auto it_m = del_map_set.begin(); it_m != del_map_set.end(); ++it_m) {
+				auto date = it_m->first;
+				auto &val_set = it_m->second;
+				for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
+//					удаляю элементы вектора сдвигая итератор начала, который получаю алгоритмом remove
+					db_vec_[date].erase(remove(db_vec_[date].begin(), db_vec_[date].end(), *it_s), db_vec_[date].end());
+				}
+				set<string> set_dif;
+				set_difference(val_set.begin(), val_set.end(), del_map_set[date].begin(), del_map_set[date].end(),
+											std::inserter(set_dif, set_dif.end()));
+				db_set_[date] = set_dif;
+			}
 		}
-		set<string> set_dif;
 
 	}
 	return count_del;
@@ -92,12 +109,16 @@ string Database::Last(const Date& date) const {
 	среди всех имеющихся дат событий нужно найти наибольшую, не превосходящую date;
 	из всех событий с такой датой нужно выбрать последнее добавленное и вывести в формате, аналогичном формату команды Print;
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
-	const auto it_founded = db_vec_.upper_bound(date);
+	auto it_founded = db_vec_.upper_bound(date);
 //	const auto it_founded = db_vec_.lower_bound(date);
 	if (it_founded == db_vec_.end()) {
 		return "No entries";
 	} else {
-		return it_founded->second.back();
+		it_founded--;
+		stringstream ss;
+		ss << it_founded->first << " " << it_founded->second.back();
+//		string last(ss);
+		return ss.str();
 	}
 	/*try {
 		const vector<string> &vec = db_vec_.at(date);
