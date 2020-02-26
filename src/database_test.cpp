@@ -79,21 +79,24 @@ void TestDatabase() {
     db.Add(d2, "e21");
     db.Add(d2, "e22");
     AssertEqual(db.Last(d), "2018-12-22 e22", "Db Last 1");
+    cerr << "Db Last 1 OK" << endl;
     Date d3(2018, 12, 24);
     db.Add(d3, "e3");
     AssertEqual(db.Last(d), "2018-12-24 e3", "Db Last 2");
+    cerr << "Db Last 2 OK" << endl;
 
     // Get last event for date before first event 
     try {
       Date d4(2017, 2, 2);
       db.Last(d4);
-//      Assert(false, "Db Last 3");
+      Assert(false, "Db Last 3");
     } catch (invalid_argument &e) {
 //    	cerr << e.what() << endl;
     	// Pass
     }
 
     // Delete event and get last
+    cerr << "Test Delete event and get last" << endl;
     istringstream is("date == 2018-12-24");
     auto condition = ParseCondition(is);
     auto predicate = [condition](const Date& date, const string& event) {
@@ -112,6 +115,7 @@ void TestDatabase() {
 
   // Del
   {
+  	cerr << "Test db Del" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");
@@ -175,6 +179,7 @@ void TestDatabase() {
 
   // Find
   {
+  	cerr << "Test db Find" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");

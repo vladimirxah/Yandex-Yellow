@@ -75,6 +75,11 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 			for (auto it_m = del_map_set.begin(); it_m != del_map_set.end(); ++it_m) {
 				auto date = it_m->first;
 				auto &val_set = it_m->second;
+				if (val_set == del_map_set[date]) {
+					db_set_.erase(date);
+					db_vec_.erase(date);
+					continue;
+				}
 				for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
 //					удаляю элементы вектора сдвигая итератор начала, который получаю алгоритмом remove
 					db_vec_[date].erase(remove(db_vec_[date].begin(), db_vec_[date].end(), *it_s), db_vec_[date].end());
@@ -110,24 +115,37 @@ string Database::Last(const Date& date) const {
 	среди всех имеющихся дат событий нужно найти наибольшую, не превосходящую date;
 	из всех событий с такой датой нужно выбрать последнее добавленное и вывести в формате, аналогичном формату команды Print;
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
-//	auto it_founded = db_vec_.upper_bound(date);
-	auto it_founded = upper_bound(db_vec_.rbegin(), db_vec_.rend(), date,
-																[](const Date& date, const pair<Date,vector<string>>& lhs) -> bool { return lhs.first < date; });
-//	const auto it_founded = db_vec_.lower_bound(date);
-	if (it_founded != db_vec_.rend()) {
-		stringstream ss;
-		ss << it_founded->first << " " << it_founded->second.back();
-		return ss.str();
-	} else {
-		throw invalid_argument("There is no events to this last date.");
+
+	if (db_vec_.empty()) {
+		throw invalid_argument("");
 	}
-	/*try {
-		const vector<string> &vec = db_vec_.at(date);
-		return make_pair(date,vec.back());
-	}	catch (const exception& e) {
-    cout << e.what() << endl;
-  }*/
-//	return make_pair(date, "ERROR, NO LAST EVENT AT THIS DATE");		//добавил, чтобы не было Warning
+/*	try {
+		if (db_vec_.at(date).empty()) {
+			throw invalid_argument("");
+		}
+		stringstream ss;
+		ss << date << " " << db_vec_.at(date).back();
+		return ss.str();
+	}
+	catch (out_of_range&) {
+	}*/
+	auto it = db_vec_.upper_bound(date);
+	if (it == db_vec_.end()) {
+		throw invalid_argument("");
+	}
+	else if (it == db_vec_.begin()) {
+		throw invalid_argument("");
+	} else {
+		it--;
+		if (!it->second.empty()) {
+			stringstream ss;
+			ss << it->first << " " << it->second.back();
+			return ss.str();
+		}
+		else {
+			throw invalid_argument("");
+		}
+	}
 }
 
 unsigned int Database::Size() const {
