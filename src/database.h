@@ -28,7 +28,7 @@ public:
 	int RemoveIf (function<bool(const Date& date, const string& event)> predicate); //std::function<int(int)> x
 	// на вход принимается [ParseCondition(is)](const Date& date, const string& event) {  return condition->Evaluate(date, event); }
 
-	vector<record> FindIf (function<bool(const Date& date, const string& event)> predicate) const;
+	vector<string> FindIf (function<bool(const Date& date, const string& event)> predicate) const;
 //	не уверен, какой тип должен отдавать метод. По идее вектор пар может подойти. В main по отданному результату итерируются методом RangeBasedFor и выводят << в cout.
 
 	string Last (const Date& date) const;

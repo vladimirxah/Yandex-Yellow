@@ -91,13 +91,14 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 //	condition->Evaluate()
 }
 
-vector<record> Database::FindIf (function<bool(const Date& date, const string& event)> predicate) const {
-	vector<record> founded_events;
+vector<string> Database::FindIf (function<bool(const Date& date, const string& event)> predicate) const {
+	vector<string> founded_events;
 	for (auto it_m = db_vec_.begin(); it_m != db_vec_.end(); ++it_m) {
 		auto &val_vec = it_m->second;
 		for (auto it_v = val_vec.begin(); it_v != val_vec.end(); ++it_v) {
 			if (predicate(it_m->first, *it_v)) {
-				founded_events.push_back(make_pair(it_m->first, *it_v));
+//				Date tdate = it_m->first;
+				founded_events.push_back(it_m->first.Str() + " " + *it_v);
 			}
 		}
 	}
@@ -113,13 +114,12 @@ string Database::Last(const Date& date) const {
 	auto it_founded = upper_bound(db_vec_.rbegin(), db_vec_.rend(), date,
 																[](const Date& date, const pair<Date,vector<string>>& lhs) -> bool { return lhs.first < date; });
 //	const auto it_founded = db_vec_.lower_bound(date);
-	if (it_founded == db_vec_.rend()) {
-		throw invalid_argument("No entries");
-	} else {
+	if (it_founded != db_vec_.rend()) {
 		stringstream ss;
 		ss << it_founded->first << " " << it_founded->second.back();
-//		string last(ss);
 		return ss.str();
+	} else {
+		throw invalid_argument("There is no events to this last date.");
 	}
 	/*try {
 		const vector<string> &vec = db_vec_.at(date);
