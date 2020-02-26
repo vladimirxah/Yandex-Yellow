@@ -18,6 +18,8 @@ public:
   int GetMonth() const;
   int GetDay() const;
 
+  string Str() const;
+
 private:
   int year;
   int month;

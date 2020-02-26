@@ -30,6 +30,14 @@ int Date::GetDay() const {
 	return day;
 }
 
+string Date::Str() const {
+	stringstream stream;
+	stream << setw(4) << setfill('0') << year <<
+	      "-" << setw(2) << setfill('0') << month <<
+	      "-" << setw(2) << setfill('0') << day;
+	return stream.str();
+}
+
 Date ParseDate(istream& is) {
 	string istr;
 	is >> istr;
