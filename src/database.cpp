@@ -157,8 +157,3 @@ unsigned int Database::Size() const {
 		throw runtime_error("Size of DB is not consistent");
 	}
 }
-
-ostream& operator<<(ostream& stream, const record& rec) {
-	stream << rec.first << ' ' << rec.second;
-  return stream;
-}
