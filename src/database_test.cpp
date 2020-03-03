@@ -39,36 +39,6 @@ void TestDatabase() {
 		throw runtime_error("Add 2 - Del 1 - Add deleted again fail.");
 	}
 
-  {
-    Database db;
-    Date d(2019, 1, 1);
-    db.Add(d, "e1");
-    db.Add(d, "e2");
-    istringstream is(R"(event == "e1")");
-    auto condition = ParseCondition(is);
-    auto predicate = [condition](const Date& date, const string& event) {
-      return condition->Evaluate(date, event);
-    };
-    AssertEqual(db.RemoveIf(predicate), 1, "Db Add2-Del-Add 1");
-    AssertEqual(db.Size(), 1u, "Size of Db must be 1 after 1e deleted from it");
-    db.Add(d, "e1");
-    AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
-  }
-
-  // Add
-  {
-    Database db;
-    Date d(2019, 1, 1);
-    db.Add(d, "e1");
-    db.Add(d, "e1");
-    istringstream is("date == 2019-01-01");
-    auto condition = ParseCondition(is);
-    auto predicate = [condition](const Date& date, const string& event) {
-      return condition->Evaluate(date, event);
-    };    
-    AssertEqual(db.FindIf(predicate).size(), 1u, "Db Add Duplicates 1");
-  }
-
   // Last
   {
     Database db;
@@ -76,9 +46,9 @@ void TestDatabase() {
     Date d1(2019, 1, 2);
     Date d2(2018, 12, 22);
     db.Add(d1, "e1");
-    db.Add(d2, "e21");
-    db.Add(d2, "e22");
-    AssertEqual(db.Last(d), "2018-12-22 e22", "Db Last 1");
+    db.Add(d2, "e2");
+    db.Add(d2, "e2");
+    AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 1");
     cerr << "Db Last 1 OK" << endl;
     Date d3(2018, 12, 24);
     db.Add(d3, "e3");
