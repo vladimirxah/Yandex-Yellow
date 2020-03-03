@@ -21,6 +21,7 @@ Find date >= 2017-01-01 AND date < 2017-07-01 AND event == "sport event" — н�
 #include "node.h"
 #include "test_runner.h"
 #include "database_test.h"
+#include "database_test_2.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -112,5 +113,7 @@ void TestAll() {
   TestRunner tr;
   tr.RunTest(TestParseEvent, "TestParseEvent");
   tr.RunTest(TestParseCondition, "TestParseCondition");
+  tr.RunTest(TestDbAddPrint, "Test Add and Print method");
+  tr.RunTest(TestDbDublicates, "Test Add Dublicates");
   tr.RunTest(TestDatabase, "Full test db");
 }
