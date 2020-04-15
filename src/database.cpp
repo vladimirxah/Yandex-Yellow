@@ -51,7 +51,9 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 			}
 		}
 	}
+	cout << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
+	//Надо попробовать заменить проверку на размер словаря - больше 0, значит ьылм удаления
 	if (count_del > 0) {
 //		unique(dates_found.begin(),dates_found.end());
 /*		map<Date, vector<string>> temp_vec(db_vec_);		//копия словаря дат в вектор событий. для итерации по нему
