@@ -37,7 +37,7 @@ ostream& Database::Print (ostream& os) const {
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
 //	vector<Date> dates_found;
 	map<Date, set<string>> del_map_set;		//Словарь дат в множество событий. Заношу сюда удаленные события.
-	int count_del = 0;
+	int count_del = 0;		//все равно надо выводить количество удаленных событий
 	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
 	//под заданное условие - добавляю их во временную БД c множеством, чтобы их потом можно было вычесть
 	for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
@@ -53,7 +53,6 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 	}
 	cout << "Debug print map of events to delete:\n" << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
-	//Надо попробовать заменить проверку на размер словаря - больше 0, значит ьылм удаления
 	if (count_del > 0) {
 //		unique(dates_found.begin(),dates_found.end());
 /*		map<Date, vector<string>> temp_vec(db_vec_);		//копия словаря дат в вектор событий. для итерации по нему
