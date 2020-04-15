@@ -16,6 +16,7 @@
 
 #include "date.h"
 #include "node.h"
+#include "test_runner.h"
 
 using namespace std;
 
