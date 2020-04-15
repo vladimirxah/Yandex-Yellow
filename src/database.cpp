@@ -77,10 +77,12 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 				auto date = it_m->first;
 				auto &val_set = it_m->second;
 				if (val_set == del_map_set[date]) {
+					cout << "Есть совпадение по множеству на дату, удаляю" << endl;
 					db_set_.erase(date);
 					db_vec_.erase(date);
 					continue;
 				}
+				//!!!***Не совсем понятно, зачем я удаляю тут все элементы вектора. Похоже удаление идет без проверки необходимости этого действия. Надо поправить
 				for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
 //					удаляю элементы вектора сдвигая итератор начала, который получаю алгоритмом remove
 					db_vec_[date].erase(remove(db_vec_[date].begin(), db_vec_[date].end(), *it_s), db_vec_[date].end());
