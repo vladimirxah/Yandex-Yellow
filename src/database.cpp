@@ -51,7 +51,7 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 			}
 		}
 	}
-	cout << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
+	cout << "Debug print map of events to delete:\n" << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
 	//Надо попробовать заменить проверку на размер словаря - больше 0, значит ьылм удаления
 	if (count_del > 0) {
