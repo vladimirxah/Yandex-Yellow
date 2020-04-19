@@ -24,16 +24,16 @@ void TestDatabase() {
 		Date d(2019, 1, 1);
 		db.Add(d, "e1");
 		db.Add(d, "e2");
-		cout << "Debug print start DB\n";
-    db.Print(cout);
+//		cout << "Debug print start DB\n";
+//    db.Print(cout);
 		istringstream is(R"(event == "e1")");
 		auto condition = ParseCondition(is);
 		auto predicate = [condition](const Date& date, const string& event) {
 			return condition->Evaluate(date, event);
 		};
 		AssertEqual(db.RemoveIf(predicate), 1, "Db Add2-Del-Add 1");
-		cout << "Debug print DB sfter deletion of e1\n";
-		db.Print(cout);
+//		cout << "Debug print DB sfter deletion of e1\n";
+//		db.Print(cout);
 		AssertEqual(db.Size(), 1u, "Size of Db must be 1 after 1e deleted from it");
 		db.Add(d, "e1");
 		AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
@@ -77,6 +77,7 @@ void TestDatabase() {
       return condition->Evaluate(date, event);
     };    
     db.RemoveIf(predicate);
+//    db.Print(cout);
     AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 4");
 //    AssertEqual(db.Last(d), make_pair<Date,string>({2018,12,22}, "e2"), "Db Last 4");
 
@@ -288,14 +289,16 @@ void TestDatabase() {
           //------------------------------------------------------
           //                        Last
           //------------------------------------------------------
-          is5.str("Last 2017-11-30\n");
+/*          is5.str("Last 2017-11-30\n");
           string command3;
           is5 >> command3;
 
-          string d_date = ParseDate(is5).Str();
-          string tmp4 = db.Last(ParseDate(is5));
+//          string d_date = ParseDate(is5).Str();
+//          cout << is5.str();
+          auto tmp4 = db.Last(ParseDate(is5));
 
-          AssertEqual(tmp4, "No entries", "Parse Last 07");
+//          AssertEqual(tmp4, "No entries", "Parse Last 07");
+          cout << "check";*/
       }
 }
 

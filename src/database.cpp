@@ -35,7 +35,7 @@ ostream& Database::Print (ostream& os) const {
 }
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
-	cout << "DEBUG print db_set before search" << endl << db_set_ << endl;
+//	cout << "DEBUG print db_set before search" << endl << "DEBUG " << db_set_ << endl;
 //	vector<Date> dates_found;
 	map<Date, set<string>> del_map_set;		//Словарь дат в множество событий. Заношу сюда удаленные события.
 	int count_del = 0;		//все равно надо выводить количество удаленных событий
@@ -52,10 +52,10 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 			}
 		}
 	}
-	cout << "Debug print map of events to delete:\n" << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
+//	cout << "DEBUG print map of events to delete:\nDEBUG " << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
 	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
 	if (count_del > 0) {
-		cout << "DEBUG print db_set after search" << endl << db_set_ << endl;
+//		cout << "DEBUG print db_set after search" << endl << "DEBUG " << db_set_ << endl;
 //		unique(dates_found.begin(),dates_found.end());
 /*		map<Date, vector<string>> temp_vec(db_vec_);		//копия словаря дат в вектор событий. для итерации по нему
 		for (auto it_m = temp_vec.begin(); it_m != temp_vec.end(); ++it_m) {
@@ -71,7 +71,7 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 
 		}*/
 		if (del_map_set == db_set_) {
-			cout << "DEBUG есть полное совпадение по БД, грохаю все" << endl;
+//			cout << "DEBUG есть полное совпадение по БД, грохаю все" << endl;
 			db_set_.clear();
 			db_vec_.clear();
 			return count_del;
@@ -80,8 +80,8 @@ int Database::RemoveIf (function<bool(const Date& date, const string& event)> pr
 				auto date = it_m->first;
 				auto &val_set = it_m->second;
 				if (val_set == db_set_[date]) {
-					cout << "Есть совпадение по множеству на дату, удаляю" << endl;
-					cout << val_set << endl << del_map_set[date] << endl;
+//					cout << "DEBUG Есть совпадение по множеству на дату, удаляю" << endl;
+//					cout << "DEBUG " << val_set << endl << "DEBUG " << del_map_set[date] << endl;
 					db_set_.erase(date);
 					db_vec_.erase(date);
 					continue;
@@ -124,7 +124,7 @@ string Database::Last(const Date& date) const {
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
 
 	if (db_vec_.empty()) {
-		throw invalid_argument("");
+		throw invalid_argument("Vector is empty");
 	}
 /*	try {
 		if (db_vec_.at(date).empty()) {
@@ -137,11 +137,11 @@ string Database::Last(const Date& date) const {
 	catch (out_of_range&) {
 	}*/
 	auto it = db_vec_.upper_bound(date);
-	if (it == db_vec_.end()) {
-		throw invalid_argument("");
+	/*if (it == db_vec_.end()) {
+		throw invalid_argument("Upperbound equals end of vector");
 	}
-	else if (it == db_vec_.begin()) {
-		throw invalid_argument("");
+	else*/ if (it == db_vec_.begin()) {
+		throw invalid_argument("Upperbound equals begin of vector");
 	} else {
 		it--;
 		if (!it->second.empty()) {
