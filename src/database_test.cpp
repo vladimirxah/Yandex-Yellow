@@ -440,100 +440,83 @@ No entries\n\
 2017-01-01 New Year\n\
 2017-03-08 Holiday\n"}, "Parse Last 03");
 	}
-}
 
-/*void TestCommandLast()
-{
+	{
+	Database db;
+	istringstream is, iss, is5;
 
-
-
-
-
-
-
-
-    {
-        Database db;
-        db.Add((Date){2017, 1, 1}, "first");
-        db.Add((Date){2017, 1, 1}, "second");
-        db.Add((Date){2017, 1, 1}, "third");
-        db.Add((Date){2017, 1, 1}, "fourth");
-        db.Add((Date){2017, 1, 1}, "five");
-        AssertEqual(2, DoRemove(db, R"(event == "second" OR event == "fourth")"), "Remove several");
-        //AssertEqual("2017-01-01 first\n2017-01-01 third\n2017-01-01 five\n", DoPrint(db), "Check print after remove several- 3");
-
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-    {                                       // всего понемногу
-        Database db;
-        istringstream is, iss, is5;
-
-        //------------------------------------------------------
-        //                     Add
-        //------------------------------------------------------
-        is.str("\
+  //------------------------------------------------------
+  //                     Add
+  //------------------------------------------------------
+  is.str("\
 Add 2017-11-21 Tuesday\n\
 Add 2017-11-20 Monday\n\
 Add 2017-11-21 Weekly meeting\n");
 
-        for(int i = 0; i < 3; i++)
-        {
-            string command;
-            is >> command;
+  for(int i = 0; i < 3; i++)
+  {
+      string command;
+      is >> command;
 
-            const auto date = ParseDate(is);
-            const auto event = ParseEvent(is);
-            db.Add(date, event);
-        }
+      const auto date = ParseDate(is);
+      const auto event = ParseEvent(is);
+      db.Add(date, event);
+  }
 
-       //------------------------------------------------------
-       //                     find
-       //------------------------------------------------------
+ //------------------------------------------------------
+ //                     find
+ //------------------------------------------------------
 
-       is.str("Find event != \"Weekly meeting\"\n");
-        string command;
-        is >> command;
+ is.str("Find event != \"Weekly meeting\"\n");
+  string command;
+  is >> command;
 
-       auto condition = ParseCondition(is);
-       auto predicate = [condition](const Date& date, const string& event){
-           return condition->Evaluate(date, event);
-       };
+  auto condition = ParseCondition(is);
+  auto predicate = [condition](const Date& date, const string& event){
+     return condition->Evaluate(date, event);
+  };
 
-       auto entries3 = db.FindIf(predicate);
-       string end_ = "Found 2 entries";
-       entries3.push_back(end_);
-       AssertEqual(entries3, vector<string>{"2017-11-20 Monday", "2017-11-21 Tuesday", "Found 2 entries"}, "Parse find 05");
+  auto entries3 = db.FindIf(predicate);
+  string end_ = "Found 2 entries";
+  entries3.push_back(end_);
+  AssertEqual(entries3, vector<string>{"2017-11-20 Monday", "2017-11-21 Tuesday", "Found 2 entries"}, "Parse find 05");
 
-       //------------------------------------------------------
-       //                        Del
-       //------------------------------------------------------
-       is.str("Del date > 2017-11-20\n");
-       string command2;
-       is >> command2;
+  //------------------------------------------------------
+  //                        Del
+  //------------------------------------------------------
+  is.str("Del date > 2017-11-20\n");
+  string command2;
+  is >> command2;
 
-       auto condition2 = ParseCondition(is);
-       auto predicate3 = [condition2](const Date& date, const string& event){
-           return condition2->Evaluate(date, event);
-       };
+  auto condition2 = ParseCondition(is);
+  auto predicate3 = [condition2](const Date& date, const string& event){
+      return condition2->Evaluate(date, event);
+  };
 
-        int count = db.RemoveIf(predicate3);
-        string tmp3 = "Removed " + to_string(count) + " entries";
+   int count = db.RemoveIf(predicate3);
+   string tmp3 = "Removed " + to_string(count) + " entries";
 
-        AssertEqual(tmp3, "Removed 3 entries", "Parse Del 06");
+   AssertEqual(tmp3, "Removed 3 entries", "Parse Del 06");
 
-        //------------------------------------------------------
-        //                        Last
-        //------------------------------------------------------
-        is5.str("Last 2017-11-30\n");
-        string command3;
-        is5 >> command3;
+		//---------------------------------------------------------------------------------------------------------
+		{                                       // всего понемногу
+		Database db;
+		istringstream is, iss, is5;
 
-        string d_date = ParseDate(is5);
-        string tmp4 = db.Last(d_date);
+		//------------------------------------------------------
+		//                        Last
+		//------------------------------------------------------
+		is5.str("Last 2017-11-30\n");
+		string command3;
+		is5 >> command3;
 
-        AssertEqual(tmp4, "No entries", "Parse Last 07");
-    }
+		auto d_date = ParseDate(is5);
+		auto tmp4 = db.Last(d_date);
+
+		AssertEqual(tmp4, "No entries", "Parse Last 07");
+		}
+	}
+
     //---------------------------------------------------------------------------------------------------------
     {
 		// Add 2018-03-08 preved
@@ -603,8 +586,8 @@ Add 2018-03-08 medved\n");
         string command3;
         is5 >> command3;
 
-        string d_date = ParseDate(is5);
-        string tmp4 = db.Last(d_date);
+        auto d_date = ParseDate(is5);
+        auto tmp4 = db.Last(d_date);
 
         AssertEqual(tmp4, "2018-03-08 krasavcheg", "Parse Last 071");
         //------------------------------------------------------
@@ -628,9 +611,27 @@ Add 2018-03-08 medved\n");
         string command4;
         is6 >> command4;
 
-        string d_date2 = ParseDate(is6);
-        string tmp5 = db.Last(d_date2);
+        auto d_date2 = ParseDate(is6);
+        auto tmp5 = db.Last(d_date2);
 
-        AssertEqual(tmp5, "2018-03-08 krasavcheg", "Parse Last 073");
+        AssertEqual(tmp5, "2018-03-08 medved", "Parse Last 073");
     }
+}
+
+/*void TestCommandLast()
+{
+    {
+        Database db;
+        db.Add((Date){2017, 1, 1}, "first");
+        db.Add((Date){2017, 1, 1}, "second");
+        db.Add((Date){2017, 1, 1}, "third");
+        db.Add((Date){2017, 1, 1}, "fourth");
+        db.Add((Date){2017, 1, 1}, "five");
+        AssertEqual(2, DoRemove(db, R"(event == "second" OR event == "fourth")"), "Remove several");
+        //AssertEqual("2017-01-01 first\n2017-01-01 third\n2017-01-01 five\n", DoPrint(db), "Check print after remove several- 3");
+
+    }
+
+
+
 }*/
