@@ -218,6 +218,7 @@ void TestDatabase() {
 
   // Add - Del - Add - Del
   {
+  	cerr << "Add - Del - Add - Del" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");
@@ -235,6 +236,7 @@ void TestDatabase() {
           //------------------------------------------------------
           //                     Add
           //------------------------------------------------------
+          cerr << "Test db Add 2" << endl;
           is.str("\
   Add 2017-11-21 Tuesday\n\
   Add 2017-11-20 Monday\n\
@@ -253,7 +255,7 @@ void TestDatabase() {
          //------------------------------------------------------
          //                     find
          //------------------------------------------------------
-
+          cerr << "Test db Find 2" << endl;
          is.str("Find event != \"Weekly meeting\"\n");
           string command;
           is >> command;
@@ -270,8 +272,22 @@ void TestDatabase() {
          AssertEqual(entries3, b, "Parse find 05");
 
          //------------------------------------------------------
+                   //                        Last
+                   //------------------------------------------------------
+                   is5.str("Last 2017-11-20\n");
+                   string command3;
+                   is5 >> command3;
+         //          string d_date = ParseDate(is5).Str();
+         //          cout << is5.str();
+//                   db.Print(cout);
+                   auto tmp4 = db.Last(ParseDate(is5));
+                   AssertEqual(tmp4, "2017-11-20 Monday", "Parse Last 07");
+                   cerr << "Last 2 Ok" << endl;
+
+         //------------------------------------------------------
          //                        Del
          //------------------------------------------------------
+         cerr << "Test db Del 2" << endl;
          is.str("Del date > 2017-11-20\n");
          string command2;
          is >> command2;
@@ -286,20 +302,50 @@ void TestDatabase() {
 
           AssertEqual(tmp3, "Removed 3 entries", "Parse Del 06");
 
-          //------------------------------------------------------
-          //                        Last
-          //------------------------------------------------------
-/*          is5.str("Last 2017-11-30\n");
-          string command3;
-          is5 >> command3;
 
-//          string d_date = ParseDate(is5).Str();
-//          cout << is5.str();
-          auto tmp4 = db.Last(ParseDate(is5));
-
-//          AssertEqual(tmp4, "No entries", "Parse Last 07");
-          cout << "check";*/
       }
+
+  // test for 14/19
+	{
+		cerr << "Start new test for 14-19 case ";
+		Database db;
+		istringstream is, iss, is5;
+		is.str("\
+			Add 1-1-1 a\n\
+			Add 1-1-1 aa\n\
+			Add 1-1-1 aaa\n");
+
+		for(int i = 0; i < 3; i++)
+		{
+			string command;
+			is >> command;
+
+			const auto date = ParseDate(is);
+			const auto event = ParseEvent(is);
+			db.Add(date, event);
+		}
+
+		is.str("Del event >= \"aa\"\n");
+		string command2;
+		is >> command2;
+
+		auto condition2 = ParseCondition(is);
+		auto predicate3 = [condition2](const Date& date, const string& event){
+			 return condition2->Evaluate(date, event);
+		};
+
+		int count = db.RemoveIf(predicate3);
+		string tmp3 = "Removed " + to_string(count) + " entries";
+		AssertEqual(tmp3, "Removed 2 entries", "Parse 14-19 test");
+
+		ostringstream os1;
+		db.Print(os1);
+		auto strtmp = os1.str();
+		AssertEqual(strtmp, "0001-01-01 a\n", "Print a-aa-aaa after Del");
+		cerr << "OK" << endl;
+
+  }
+
 }
 
 /*void TestCommandLast()
