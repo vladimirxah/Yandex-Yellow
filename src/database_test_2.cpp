@@ -91,7 +91,7 @@ void TestDbDublicates() {
 	  }
 }
 
-void TestAnotherOne () {
+void TestAnotherOne() {
 	{
 		istringstream is("date != 2017-11-18");
 		shared_ptr<Node> root = ParseCondition(is);

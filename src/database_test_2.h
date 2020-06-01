@@ -18,3 +18,4 @@
 
 void TestDbAddPrint();
 void TestDbDublicates();
+void TestAnotherOne();
