@@ -115,6 +115,7 @@ void TestAll() {
   tr.RunTest(TestParseCondition, "TestParseCondition");
   tr.RunTest(TestDbAddPrint, "Test Add and Print method");	//databasetest_2
   tr.RunTest(TestDbDublicates, "Test Add Dublicates");			//databasetest_2
-  tr.RunTest(TestAnotherOne, "Test OneParse");			//databasetest_2
-  tr.RunTest(TestDatabase, "Full test db");
+  tr.RunTest(TestAnotherOne, "Test OneParse");							//databasetest_2
+  tr.RunTest(TestDatabase, "Full test db");									//database_test
+  tr.RunTest(TestCommandLast, "Test command last");					//database_test
 }

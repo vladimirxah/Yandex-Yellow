@@ -141,7 +141,8 @@ string Database::Last(const Date& date) const {
 		throw invalid_argument("Upperbound equals end of vector");
 	}
 	else*/ if (it == db_vec_.begin()) {
-		throw invalid_argument("Upperbound equals begin of vector");
+//		throw invalid_argument("Upperbound equals begin of vector");
+		return "No entries";
 	} else {
 		it--;
 		if (!it->second.empty()) {
