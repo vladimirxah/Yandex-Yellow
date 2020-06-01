@@ -124,7 +124,8 @@ string Database::Last(const Date& date) const {
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
 
 	if (db_vec_.empty()) {
-		throw invalid_argument("Vector is empty");
+//		throw invalid_argument("Vector is empty");
+		return "No entries";
 	}
 /*	try {
 		if (db_vec_.at(date).empty()) {
