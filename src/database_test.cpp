@@ -311,11 +311,12 @@ void TestDatabase() {
 		Database db;
 		istringstream is, iss, is5;
 		is.str("\
-			Add 1-1-1 a\n\
 			Add 1-1-1 aa\n\
-			Add 1-1-1 aaa\n");
+			Add 1-1-1 a\n\
+			Add 1-1-1 aaa\n\
+			Add 1-1-1 aaaa\n");
 
-		for(int i = 0; i < 3; i++)
+		for(int i = 0; i < 4; i++)
 		{
 			string command;
 			is >> command;
@@ -325,7 +326,7 @@ void TestDatabase() {
 			db.Add(date, event);
 		}
 
-		is.str("Del event >= \"aa\"\n");
+		is.str("Del event >= \"aaa\"");
 		string command2;
 		is >> command2;
 
@@ -341,7 +342,8 @@ void TestDatabase() {
 		ostringstream os1;
 		db.Print(os1);
 		auto strtmp = os1.str();
-		AssertEqual(strtmp, "0001-01-01 a\n", "Print a-aa-aaa after Del");
+		AssertEqual(strtmp, "0001-01-01 aa\n\
+0001-01-01 a\n", "Print aa-a-aaa-aaaa after Del");
 		cerr << "OK" << endl;
 
   }
