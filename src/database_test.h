@@ -14,7 +14,7 @@
 #include "condition_parser.h"
 
 void TestDatabase();
-
+void TestDateParse();
 void TestCommandLast();
 
 string ParseEvent(istream& is);

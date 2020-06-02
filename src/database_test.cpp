@@ -350,6 +350,54 @@ void TestDatabase() {
 
 }
 
+void TestDateParse()
+{
+	Database db;
+	istringstream is;
+	is.str("\
+		Add 1-1-1 a\n\
+		Add 1-1-2 aa\n\
+		Add 1-1-3 aaa\n\
+		Add 1-1-4 aaaa\n");
+
+	for(int i = 0; i < 4; i++)
+	{
+		string command;
+		is >> command;
+
+		const auto date = ParseDate(is);
+		const auto event = ParseEvent(is);
+		db.Add(date, event);
+	}
+
+	{
+		is.str("Find date < 1-1-2");
+		string command2;
+		is >> command2;
+
+		auto condition = ParseCondition(is);
+		auto predicate = [condition](const Date& date, const string& event){
+			 return condition->Evaluate(date, event);
+		};
+
+		auto entries = db.FindIf(predicate);
+		vector<string> vecassert = {"0001-01-01 a"};
+
+		AssertEqual(entries, vecassert, "Parse date < 1-1-2");
+	}
+
+/*	int count = db.RemoveIf(predicate3);
+	string tmp3 = "Removed " + to_string(count) + " entries";
+	AssertEqual(tmp3, "Removed 2 entries", "Parse 14-19 test");
+
+	ostringstream os1;
+	db.Print(os1);
+	auto strtmp = os1.str();
+	AssertEqual(strtmp, "0001-01-01 aa\n\
+0001-01-01 a\n", "Print aa-a-aaa-aaaa after Del");*/
+
+}
+
 void TestCommandLast()
 {
 	{                                        // Add
