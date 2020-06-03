@@ -395,7 +395,7 @@ void TestDateParse()
 		AssertEqual(db.FindIf(predicate2), vector<string> {"0001-01-03 aaa", "0001-01-04 aaaa"}, "Parse date > 1-1-2");
 	}
 //		RemoveIf
-/*	{
+	{
 		Database db1;
 		db1 = db;
 		is.clear();
@@ -411,17 +411,17 @@ void TestDateParse()
 		AssertEqual(strtmp, "0001-01-02 aa\n\
 0001-01-03 aaa\n\
 0001-01-04 aaaa\n", "RemoveIf date < 1-1-2");
-	}*/
+	}
 	{
 		Database db2;
 		db2 = db;
 		is.clear();
 		is.str("date < 1-1-2 OR date > 1-1-3");
 		auto condition = ParseCondition(is);
-		auto predicate1 = [condition](const Date& date, const string& event){
+		auto predicate = [condition](const Date& date, const string& event){
 			 return condition->Evaluate(date, event);
 		};
-		db2.RemoveIf(predicate1);
+		db2.RemoveIf(predicate);
 		ostringstream os2;
 		db2.Print(os2);
 		auto strtmp = os2.str();
