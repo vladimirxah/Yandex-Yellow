@@ -37,9 +37,9 @@ void TestDatabase() {
 		AssertEqual(db.Size(), 1u, "Size of Db must be 1 after 1e deleted from it");
 		db.Add(d, "e1");
 		AssertEqual(db.FindIf(empty_predicate).size(), 2u, "Db Add2-Del-Add 2");
-		cerr << "Add 2 - Del 1 - Add deleted again" << " OK" << endl;
+//		cerr << "Add 2 - Del 1 - Add deleted again" << " OK" << endl;
 	} catch (runtime_error& e) {
-		cerr << "Add 2 - Del 1 - Add deleted again" << " fail: " << e.what() << endl;
+//		cerr << "Add 2 - Del 1 - Add deleted again" << " fail: " << e.what() << endl;
 		throw runtime_error("Add 2 - Del 1 - Add deleted again fail.");
 	}
 
@@ -53,11 +53,11 @@ void TestDatabase() {
     db.Add(d2, "e2");
     db.Add(d2, "e2");
     AssertEqual(db.Last(d), "2018-12-22 e2", "Db Last 1");
-    cerr << "Db Last 1 OK" << endl;
+//    cerr << "Db Last 1 OK" << endl;
     Date d3(2018, 12, 24);
     db.Add(d3, "e3");
     AssertEqual(db.Last(d), "2018-12-24 e3", "Db Last 2");
-    cerr << "Db Last 2 OK" << endl;
+//    cerr << "Db Last 2 OK" << endl;
 
     // Get last event for date before first event 
     try {
@@ -70,7 +70,7 @@ void TestDatabase() {
     }
 
     // Delete event and get last
-    cerr << "Test Delete event and get last" << endl;
+//    cerr << "Test Delete event and get last" << endl;
     istringstream is("date == 2018-12-24");
     auto condition = ParseCondition(is);
     auto predicate = [condition](const Date& date, const string& event) {
@@ -90,7 +90,7 @@ void TestDatabase() {
 
   // Del
   {
-  	cerr << "Test db Del" << endl;
+//  	cerr << "Test db Del" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");
@@ -154,7 +154,7 @@ void TestDatabase() {
 
   // Find
   {
-  	cerr << "Test db Find" << endl;
+//  	cerr << "Test db Find" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");
@@ -218,7 +218,7 @@ void TestDatabase() {
 
   // Add - Del - Add - Del
   {
-  	cerr << "Add - Del - Add - Del" << endl;
+//  	cerr << "Add - Del - Add - Del" << endl;
     Database db;
     db.Add({2019, 1, 1}, "e1");
     db.Add({2019, 1, 1}, "e2");
@@ -236,7 +236,7 @@ void TestDatabase() {
           //------------------------------------------------------
           //                     Add
           //------------------------------------------------------
-          cerr << "Test db Add 2" << endl;
+//          cerr << "Test db Add 2" << endl;
           is.str("\
   Add 2017-11-21 Tuesday\n\
   Add 2017-11-20 Monday\n\
@@ -255,7 +255,7 @@ void TestDatabase() {
          //------------------------------------------------------
          //                     find
          //------------------------------------------------------
-          cerr << "Test db Find 2" << endl;
+//          cerr << "Test db Find 2" << endl;
          is.str("Find event != \"Weekly meeting\"\n");
           string command;
           is >> command;
@@ -282,12 +282,12 @@ void TestDatabase() {
 //                   db.Print(cout);
                    auto tmp4 = db.Last(ParseDate(is5));
                    AssertEqual(tmp4, "2017-11-20 Monday", "Parse Last 07");
-                   cerr << "Last 2 Ok" << endl;
+//                   cerr << "Last 2 Ok" << endl;
 
          //------------------------------------------------------
          //                        Del
          //------------------------------------------------------
-         cerr << "Test db Del 2" << endl;
+//         cerr << "Test db Del 2" << endl;
          is.str("Del date > 2017-11-20\n");
          string command2;
          is >> command2;
@@ -307,7 +307,7 @@ void TestDatabase() {
 
   // test for 14/19
 	{
-		cerr << "Start new test for 14-19 case ";
+//		cerr << "Start new test for 14-19 case ";
 		Database db;
 		istringstream is, iss, is5;
 		is.str("\
@@ -344,7 +344,7 @@ void TestDatabase() {
 		auto strtmp = os1.str();
 		AssertEqual(strtmp, "0001-01-01 aa\n\
 0001-01-01 a\n", "Print aa-a-aaa-aaaa after Del");
-		cerr << "OK" << endl;
+//		cerr << "OK" << endl;
 
   }
 
@@ -369,21 +369,64 @@ void TestDateParse()
 		const auto event = ParseEvent(is);
 		db.Add(date, event);
 	}
-
+//		Find
 	{
-		is.str("Find date < 1-1-2");
-		string command2;
-		is >> command2;
-
+		is.str("date < 1-1-2");
 		auto condition = ParseCondition(is);
-		auto predicate = [condition](const Date& date, const string& event){
+		auto predicate0 = [condition](const Date& date, const string& event){
 			 return condition->Evaluate(date, event);
 		};
+		AssertEqual(db.FindIf(predicate0), vector<string> {"0001-01-01 a"}, "Parse date < 1-1-2");
 
-		auto entries = db.FindIf(predicate);
-		vector<string> vecassert = {"0001-01-01 a"};
+		is.clear();
+		is.str("date == 1-1-2");
+		condition = ParseCondition(is);
+		auto predicate1 = [condition](const Date& date, const string& event){
+			 return condition->Evaluate(date, event);
+		};
+		AssertEqual(db.FindIf(predicate1), vector<string> {"0001-01-02 aa"}, "Parse date == 1-1-2");
 
-		AssertEqual(entries, vecassert, "Parse date < 1-1-2");
+		is.clear();
+		is.str("date > 1-1-2");
+		condition = ParseCondition(is);
+		auto predicate2 = [condition](const Date& date, const string& event){
+			 return condition->Evaluate(date, event);
+		};
+		AssertEqual(db.FindIf(predicate2), vector<string> {"0001-01-03 aaa", "0001-01-04 aaaa"}, "Parse date > 1-1-2");
+	}
+//		RemoveIf
+/*	{
+		Database db1;
+		db1 = db;
+		is.clear();
+		is.str("date < 1-1-2");
+		auto condition = ParseCondition(is);
+		auto predicate0 = [condition](const Date& date, const string& event){
+			 return condition->Evaluate(date, event);
+		};
+		db1.RemoveIf(predicate0);
+		ostringstream os1;
+		db1.Print(os1);
+		auto strtmp = os1.str();
+		AssertEqual(strtmp, "0001-01-02 aa\n\
+0001-01-03 aaa\n\
+0001-01-04 aaaa\n", "RemoveIf date < 1-1-2");
+	}*/
+	{
+		Database db2;
+		db2 = db;
+		is.clear();
+		is.str("date < 1-1-2 OR date > 1-1-3");
+		auto condition = ParseCondition(is);
+		auto predicate1 = [condition](const Date& date, const string& event){
+			 return condition->Evaluate(date, event);
+		};
+		db2.RemoveIf(predicate1);
+		ostringstream os2;
+		db2.Print(os2);
+		auto strtmp = os2.str();
+		AssertEqual(strtmp, "0001-01-02 aa\n\
+0001-01-03 aaa\n", "RemoveIf date < 1-1-2 AND date > 1-1-3");
 	}
 
 /*	int count = db.RemoveIf(predicate3);
