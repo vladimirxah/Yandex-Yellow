@@ -454,22 +454,6 @@ void TestDateParse()
 				 return condition->Evaluate(date, event);
 			};
 			AssertEqual(db.FindIf(predicate0), vector<string> {"0001-01-01 a"}, "date < 1-1-4 AND event == \"a\"");
-
-//			is.clear();
-//			is.str("date == 1-1-2");
-//			condition = ParseCondition(is);
-//			auto predicate1 = [condition](const Date& date, const string& event){
-//				 return condition->Evaluate(date, event);
-//			};
-//			AssertEqual(db.FindIf(predicate1), vector<string> {"0001-01-02 aa"}, "Parse date == 1-1-2");
-//
-//			is.clear();
-//			is.str("date > 1-1-2");
-//			condition = ParseCondition(is);
-//			auto predicate2 = [condition](const Date& date, const string& event){
-//				 return condition->Evaluate(date, event);
-//			};
-//			AssertEqual(db.FindIf(predicate2), vector<string> {"0001-01-03 aaa", "0001-01-04 aaaa"}, "Parse date > 1-1-2");
 		}
 		is.clear();
 		is.str("\
@@ -498,9 +482,38 @@ void TestDateParse()
 			};
 			AssertEqual(db.FindIf(predicate0),
 									vector<string> {"0001-01-01 a", "0001-01-01 aa1", "0001-01-01 a2", "0001-01-01 aaa3", "0001-01-01 aaaa4"},
-									"Parse date < 1-1-2");
+									"Parse date < 1-1-2 after added events");
 		}
+		{
+				Database db1;
+				db1 = db;
+				is.clear();
+				is.str("event == \"aa1\" OR event == \"aa\"");
+				auto condition = ParseCondition(is);
+				auto predicate = [condition](const Date& date, const string& event){
+					 return condition->Evaluate(date, event);
+				};
+				db1.RemoveIf(predicate);
+				is.clear();
+				is.str("date < 1-1-2");
+				auto condition0 = ParseCondition(is);
+				auto predicate0 = [condition0](const Date& date, const string& event){
+					 return condition0->Evaluate(date, event);
+				};
+				AssertEqual(db1.FindIf(predicate0),
+										vector<string> {"0001-01-01 a", "0001-01-01 a2", "0001-01-01 aaa3", "0001-01-01 aaaa4"},
+										"Parse date < 1-1-2 after added and removed events");
 
+				ostringstream os2;
+				db1.Print(os2);
+				auto strtmp = os2.str();
+				AssertEqual(strtmp, "0001-01-01 a\n\
+0001-01-01 a2\n\
+0001-01-01 aaa3\n\
+0001-01-01 aaaa4\n\
+0001-01-03 aaa\n\
+0001-01-04 aaaa\n", "Print after RemoveIf date < 1-1-2 OR date > 1-1-3");
+			}
 
 }
 
