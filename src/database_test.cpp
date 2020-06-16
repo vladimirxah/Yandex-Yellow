@@ -514,6 +514,45 @@ void TestDateParse()
 0001-01-03 aaa\n\
 0001-01-04 aaaa\n", "Print after RemoveIf date < 1-1-2 OR date > 1-1-3");
 			}
+			{
+				Database db;
+				db.Add({2017, 1, 1}, "first");
+				db.Add({2017, 1, 1}, "second");
+				db.Add({2017, 1, 1}, "third");
+				db.Add({2017, 1, 1}, "fourth");
+				db.Add({2017, 1, 1}, "five");
+
+				is.clear();
+				is.str(R"(event == "second" OR event == "fourth")");
+				auto condition = ParseCondition(is);
+				auto predicate = [condition](const Date& date, const string& event){
+					 return condition->Evaluate(date, event);
+				};
+				AssertEqual(2, db.RemoveIf(predicate), "Remove several");
+
+				ostringstream os2;
+				db.Print(os2);
+				auto strtmp = os2.str();
+				AssertEqual(strtmp, "2017-01-01 first\n\
+2017-01-01 third\n\
+2017-01-01 five\n", "Check print after remove several-1");
+
+				db.Add({2017, 1, 1}, "second");
+				db.Add({2017, 1, 1}, "second");
+				db.Add({2017, 1, 1}, "New Year");
+				os2.str("");
+				os2.clear();
+				db.Print(os2);
+				strtmp = os2.str();
+				AssertEqual(strtmp, "2017-01-01 first\n\
+2017-01-01 third\n\
+2017-01-01 five\n\
+2017-01-01 second\n\
+2017-01-01 New Year\n", "Check print after remove several-2");
+//				AssertEqual(2, DoRemove(db, R"(event == "second" OR event == "fourth")"), "Remove several");
+//				AssertEqual("2017-01-01 first\n2017-01-01 third\n2017-01-01 five\n", DoPrint(db), "Check print after remove several- 3");
+
+			}
 
 }
 
