@@ -15,6 +15,7 @@
 
 void TestDatabase();
 void TestDateParse();
+void TestVGBase();
 void TestCommandLast();
 
 string ParseEvent(istream& is);

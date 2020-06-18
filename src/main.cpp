@@ -119,4 +119,5 @@ void TestAll() {
   tr.RunTest(TestDatabase, "Full test db");									//database_test
   tr.RunTest(TestCommandLast, "Test command last");					//database_test
   tr.RunTest(TestDateParse, "Test date FindIf and RemoveIf");					//database_test
+  tr.RunTest(TestVGBase, "Test my VG database and many del and find from it");					//database_test
 }

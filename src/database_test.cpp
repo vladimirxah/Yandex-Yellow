@@ -553,7 +553,114 @@ void TestDateParse()
 //				AssertEqual("2017-01-01 first\n2017-01-01 third\n2017-01-01 five\n", DoPrint(db), "Check print after remove several- 3");
 
 			}
+}
 
+void TestVGBase()
+{
+	{
+					Database db;
+					istringstream is;
+					is.str("\
+	Add 0001-01-21 monday\n\
+	Add 0001-01-01 Start of time\n\
+	Add 0001-01-01 Creation of sun\n\
+	Add 0001-01-01 other 8 planets\n\
+	Add 0001-01-02 Earth\n\
+	Add 0001-01-02 our Moon\n\
+	Add 0001-01-21 tuesday\n\
+	Add 0001-01-02 pangeya\n\
+	Add 0001-01-02 sea\n\
+	Add 9999-12-31 fixing seeing\n\
+	Add 9999-12-31 try to cath a star\n\
+	Add 9999-12-31 burn it\n\
+	Add 9999-12-31 trashtodel\n\
+	Add 0001-01-21 wendsday\n\
+	Add 9999-12-31 cant burn it :(\n\
+	Add 0001-11-01 aabbcc\n\
+	Add 0001-11-01 bbccdd\n\
+	Add 0001-11-01 aaaacc\n\
+	Add 9999-12-31 end of Time\n\
+	Add 9999-12-31 event-to-del\n\
+	Add 0001-01-21 thursday\n\
+	Add 1986-03-20 March of eighty six\n\
+	Add 1986-03-31 last day of march\n\
+	Add 1986-03-31 some new event\n\
+	Add 0001-01-21 friday\n\
+	Add 1986-03-31 and2\n\
+	Add 1986-03-31 some7\n\
+	Add 1986-03-31 kind of\n\
+	Add 1986-03-31 end of thirty one\n\
+	Add 1986-03-31 trashtodel\n");
+
+					for(int i = 0; i < 30; i++)
+					{
+						string command;
+						is >> command;
+
+						const auto date = ParseDate(is);
+						const auto event = ParseEvent(is);
+						db.Add(date, event);
+					}
+
+					ostringstream os;
+					db.Print(os);
+					auto strprnt = os.str();
+					AssertEqual(strprnt, "0001-01-01 Start of time\n\
+0001-01-01 Creation of sun\n\
+0001-01-01 other 8 planets\n\
+0001-01-02 Earth\n\
+0001-01-02 our Moon\n\
+0001-01-02 pangeya\n\
+0001-01-02 sea\n\
+0001-01-21 monday\n\
+0001-01-21 tuesday\n\
+0001-01-21 wendsday\n\
+0001-01-21 thursday\n\
+0001-01-21 friday\n\
+0001-11-01 aabbcc\n\
+0001-11-01 bbccdd\n\
+0001-11-01 aaaacc\n\
+1986-03-20 March of eighty six\n\
+1986-03-31 last day of march\n\
+1986-03-31 some new event\n\
+1986-03-31 and2\n\
+1986-03-31 some7\n\
+1986-03-31 kind of\n\
+1986-03-31 end of thirty one\n\
+1986-03-31 trashtodel\n\
+9999-12-31 fixing seeing\n\
+9999-12-31 try to cath a star\n\
+9999-12-31 burn it\n\
+9999-12-31 trashtodel\n\
+9999-12-31 cant burn it :(\n\
+9999-12-31 end of Time\n\
+9999-12-31 event-to-del\n", "Check print after full fill of my database");
+
+					Database dbc;
+					dbc = db;
+					is.clear();
+					is.str("date == 1-1-21 OR date >= 1986-03-31");
+					auto condition = ParseCondition(is);
+					auto predicate = [condition](const Date& date, const string& event){
+						 return condition->Evaluate(date, event);
+					};
+					AssertEqual(dbc.RemoveIf(predicate), 19, "Del cond 001");
+					os.str("");
+					os.clear();
+					dbc.Print(os);
+					strprnt = os.str();
+					AssertEqual(strprnt, "0001-01-01 Start of time\n\
+0001-01-01 Creation of sun\n\
+0001-01-01 other 8 planets\n\
+0001-01-02 Earth\n\
+0001-01-02 our Moon\n\
+0001-01-02 pangeya\n\
+0001-01-02 sea\n\
+0001-11-01 aabbcc\n\
+0001-11-01 bbccdd\n\
+0001-11-01 aaaacc\n\
+1986-03-20 March of eighty six\n", "Check print after Del cond 001");
+	}
 }
 
 void TestCommandLast()
