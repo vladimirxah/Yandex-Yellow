@@ -37,75 +37,31 @@ ostream& Database::Print (ostream& os) const {
 }
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
-	/*!!!!Проверить работу RemoveIf для дат
-	Я, по моему, не проверяю условие для даты парсингом условия*/
+	/*удалить из базы все записи, которые удовлетворяют условию condition
+	 Встретив команду Del condition, ваша программа должна удалить из базы данных все события, удовлетворяющие условию condition, и вывести в стандартный вывод количество удалённых записей N в формате «Removed N entries». Если условие пусто, результатом выполнения команды должна стать очистка всей базы данных*/
 
-//	cout << "DEBUG print db_set before search" << endl << "DEBUG " << db_set_ << endl;
-//	vector<Date> dates_found;
-	map<Date, set<string>> del_map_set;		//Словарь дат в множество событий. Заношу сюда удаленные события.
+	map<Date, set<string>> new_map_set;		//Словарь дат в множество событий. Заношу сюда не удаляемые события.
+	map<Date, vector<string>> new_map_vec;		//Словарь дат в вектор событий. Заношу сюда не удаляемые события.
 	int count_del = 0;		//все равно надо выводить количество удаленных событий
-	//прохожу итератором по базе с множествами сравнивая каждую пару год и событие функцией predicate. Если они подходят
-	//под заданное условие - добавляю их во временную БД c множеством, чтобы их потом можно было вычесть
-	for (auto it_m = db_set_.begin(); it_m != db_set_.end(); ++it_m) {
-		auto &val_set = it_m->second;
-		for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
-			auto date = it_m->first;
-			if (predicate(date, *it_s)) {
+	//прохожу итератором по базе с векторами дат-событий сравнивая каждую пару год и событие функцией predicate. Если они подходят
+	//под заданное условие - добавляю их во временную БД c вектором, чтобы их потом можно было заменить базе множеств и векторов
+	for (auto it_m = db_vec_.begin(); it_m != db_vec_.end(); ++it_m) {
+		auto date = it_m->first;
+		auto &val_vec = it_m->second;
+		for (auto it_s = val_vec.begin(); it_s != val_vec.end(); ++it_s) {
+			if (!predicate(date, *it_s)) {
+				new_map_set[date].insert(*it_s);
+				new_map_vec[date].push_back(*it_s);
+			} else {
 				++count_del;
-//				dates_found.push_back(date);
-				del_map_set[date].insert(*it_s);
 			}
 		}
 	}
-//	cout << "DEBUG print map of events to delete:\nDEBUG " << del_map_set << endl;			//REMOVE IT AFTER TEST!!!
-	//если были удаления из базы, надо пройтись по базе и удалить ненужные события по отмеченным датам
 	if (count_del > 0) {
-//		cout << "DEBUG print db_set after search" << endl << "DEBUG " << db_set_ << endl;
-//		unique(dates_found.begin(),dates_found.end());
-/*		map<Date, vector<string>> temp_vec(db_vec_);		//копия словаря дат в вектор событий. для итерации по нему
-		for (auto it_m = temp_vec.begin(); it_m != temp_vec.end(); ++it_m) {
-			auto date = it_m->first;
-			std::map<Date, std::set<string> >::iterator search = del_map_set.find(date);
-			if (search != del_map_set.end()) {
-				set<string> set_dif;
-				auto &val_set = it_m->second;
-				set_difference(val_set.begin(), val_set.end(), del_map_set[date].begin(), del_map_set[date].end(),
-						std::inserter(set_dif, set_dif.end()));
-				db_set_[date] = set_dif;
-			}
-
-		}*/
-		if (del_map_set == db_set_) {
-//			cout << "DEBUG есть полное совпадение по БД, грохаю все" << endl;
-			db_set_.clear();
-			db_vec_.clear();
-			return count_del;
-		} else {
-			for (auto it_m = del_map_set.begin(); it_m != del_map_set.end(); ++it_m) {
-				auto date = it_m->first;
-				auto &val_set = it_m->second;
-				if (val_set == db_set_[date]) {
-//					cout << "DEBUG Есть совпадение по множеству на дату, удаляю" << endl;
-//					cout << "DEBUG " << val_set << endl << "DEBUG " << del_map_set[date] << endl;
-					db_set_.erase(date);
-					db_vec_.erase(date);
-					continue;
-				}
-				//!!!***Не совсем понятно, зачем я удаляю тут все элементы вектора. Похоже удаление идет без проверки необходимости этого действия. Надо поправить
-				for (auto it_s = val_set.begin(); it_s != val_set.end(); ++it_s) {
-//					удаляю элементы вектора сдвигая итератор начала, который получаю алгоритмом remove
-					db_vec_[date].erase(remove(db_vec_[date].begin(), db_vec_[date].end(), *it_s), db_vec_[date].end());
-				}
-				set<string> set_dif;
-				set_difference(val_set.begin(), val_set.end(), del_map_set[date].begin(), del_map_set[date].end(),
-											std::inserter(set_dif, set_dif.end()));
-				db_set_[date] = set_dif;
-			}
-		}
-
+		db_vec_ = new_map_vec;
+		db_set_ = new_map_set;
 	}
 	return count_del;
-//	condition->Evaluate()
 }
 
 vector<string> Database::FindIf (function<bool(const Date& date, const string& event)> predicate) const {
