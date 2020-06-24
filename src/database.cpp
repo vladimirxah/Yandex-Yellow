@@ -111,7 +111,6 @@ vector<string> Database::FindIf (function<bool(const Date& date, const string& e
 		auto &val_vec = it_m->second;
 		for (auto it_v = val_vec.begin(); it_v != val_vec.end(); ++it_v) {
 			if (predicate(it_m->first, *it_v)) {
-//				Date tdate = it_m->first;
 				founded_events.push_back(it_m->first.Str() + " " + *it_v);
 			}
 		}
