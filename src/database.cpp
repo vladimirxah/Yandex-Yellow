@@ -126,26 +126,11 @@ string Database::Last(const Date& date) const {
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
 
 	if (db_vec_.empty()) {
-//		throw invalid_argument("Vector is empty");
 		return "No entries";
 	}
-/*	try {
-		if (db_vec_.at(date).empty()) {
-			throw invalid_argument("");
-		}
-		stringstream ss;
-		ss << date << " " << db_vec_.at(date).back();
-		return ss.str();
-	}
-	catch (out_of_range&) {
-	}*/
 	auto it = db_vec_.upper_bound(date);
-	/*if (it == db_vec_.end()) {
-		throw invalid_argument("Upperbound equals end of vector");
-	}
-	else*/ if (it == db_vec_.begin()) {
-//		throw invalid_argument("Upperbound equals begin of vector");
-		return "No entries";
+	if (it == db_vec_.begin()) {
+		return "No entries";		//Upperbound equals begin of vector
 	} else {
 		it--;
 		if (!it->second.empty()) {
@@ -154,7 +139,7 @@ string Database::Last(const Date& date) const {
 			return ss.str();
 		}
 		else {
-			throw invalid_argument("");
+			throw invalid_argument("Vector for this Date is Empty");
 		}
 	}
 }
