@@ -35,6 +35,8 @@ ostream& Database::Print (ostream& os) const {
 }
 
 int Database::RemoveIf (function<bool(const Date& date, const string& event)> predicate) {
+	/*!!!!Проверить работу RemoveIf для дат
+	Я, по моему, не проверяю условие для даты парсингом условия*/
 //	cout << "DEBUG print db_set before search" << endl << "DEBUG " << db_set_ << endl;
 //	vector<Date> dates_found;
 	map<Date, set<string>> del_map_set;		//Словарь дат в множество событий. Заношу сюда удаленные события.
@@ -124,7 +126,8 @@ string Database::Last(const Date& date) const {
 	если date меньше всех имеющихся дат, необходимо вывести «No entries».*/
 
 	if (db_vec_.empty()) {
-		throw invalid_argument("Vector is empty");
+//		throw invalid_argument("Vector is empty");
+		return "No entries";
 	}
 /*	try {
 		if (db_vec_.at(date).empty()) {
