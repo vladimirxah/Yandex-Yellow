@@ -877,6 +877,10 @@ Add 2018-03-08 medved\n");
         string tmp3 = "Removed " + to_string(count) + " entries";
 
         AssertEqual(tmp3, "Removed 1 entries", "Parse Del 063");
+        ostringstream os;
+				db.Print(os);
+				auto strprnt = os.str();
+				AssertEqual(strprnt, "2018-03-08 medved\n", "Parse Print after Del 063");
         //------------------------------------------------------
         //                     Add
         //------------------------------------------------------
@@ -892,6 +896,13 @@ Add 2018-03-08 medved\n");
             db.Add(date, event);
         }
 
+				os.str("");
+				os.clear();
+				db.Print(os);
+				strprnt = os.str();
+				AssertEqual(strprnt, "2018-03-08 medved\n\
+2018-03-08 krasavcheg\n", "Parse Print after Del 063");
+
         //------------------------------------------------------
         //                        Last
         //------------------------------------------------------
@@ -901,7 +912,6 @@ Add 2018-03-08 medved\n");
 
         auto d_date = ParseDate(is5);
         auto tmp4 = db.Last(d_date);
-
         AssertEqual(tmp4, "2018-03-08 krasavcheg", "Parse Last 071");
         //------------------------------------------------------
         //                     Add
@@ -917,6 +927,14 @@ Add 2018-03-08 medved\n");
             const auto event = ParseEvent(is8);
             db.Add(date, event);
         }
+
+
+				os.str("");
+				os.clear();
+				db.Print(os);
+				strprnt = os.str();
+				AssertEqual(strprnt, "2018-03-08 medved\n\
+2018-03-08 krasavcheg\n", "Parse Print after Add 917");
         //------------------------------------------------------
         //                        Last
         //------------------------------------------------------
@@ -927,7 +945,7 @@ Add 2018-03-08 medved\n");
         auto d_date2 = ParseDate(is6);
         auto tmp5 = db.Last(d_date2);
 
-        AssertEqual(tmp5, "2018-03-08 medved", "Parse Last 073");
+        AssertEqual(tmp5, "2018-03-08 krasavcheg", "Parse Last 939");
     }
 }
 
